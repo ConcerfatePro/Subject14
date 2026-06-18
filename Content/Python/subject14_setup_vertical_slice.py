@@ -36,7 +36,10 @@ _SLICE_LABELS = (
     "S14_DevBreaker",
     "S14_BreakerMarker",
     "S14_DevNoteDay3",
+    "S14_Marker_Note01",
+    "S14_Marker_Note02",
     "S14_Light_Note01",
+    "S14_Light_Note02",
     "S14_Light_Breaker",
     "S14_Light_Hatch",
     "S14_CreatureHintAnchor",
@@ -123,17 +126,59 @@ def _load_cube_mesh():
     return None
 
 
-def _spawn_point_light(loc, intensity, label, warm=True):
+def _spawn_point_light(loc, intensity, label, warm=True, radius=420.0):
     light = _spawn_actor(unreal.PointLight, loc, _ROT_ZERO, label)
     if not light:
         return None
     comp = light.get_component_by_class(unreal.PointLightComponent)
     if comp:
         comp.set_editor_property("intensity", intensity)
-        comp.set_editor_property("attenuation_radius", 650.0)
+        comp.set_editor_property("attenuation_radius", radius)
+        comp.set_editor_property("source_radius", 12.0)
+        comp.set_editor_property("soft_source_radius", 20.0)
         if warm:
-            comp.set_editor_property("light_color", unreal.Color(255, 235, 200, 255))
+            comp.set_editor_property("light_color", unreal.Color(255, 210, 160, 255))
+        else:
+            comp.set_editor_property("light_color", unreal.Color(190, 210, 255, 255))
     return light
+
+
+def _spawn_marker_post(loc, label, tall=1.4):
+    mesh = _load_cube_mesh()
+    if not mesh:
+        return None
+    post = _spawn_actor(unreal.StaticMeshActor, loc, _ROT_ZERO, label)
+    smc = post.get_component_by_class(unreal.StaticMeshComponent)
+    if smc:
+        smc.set_static_mesh(mesh)
+        post.set_actor_scale3d(unreal.Vector(0.18, 0.18, tall))
+    return post
+
+
+def _soften_scene_lights():
+    """Tame sun/skylight so point lights read as soft cues, not glare."""
+    asub = _actor_subsystem()
+    for actor in asub.get_all_level_actors():
+        c = actor.get_class()
+        while c:
+            name = c.get_name()
+            if name == "DirectionalLight":
+                comp = actor.get_component_by_class(unreal.DirectionalLightComponent)
+                if comp:
+                    comp.set_editor_property("intensity", 3.2)
+                break
+            if name == "SkyLight":
+                comp = actor.get_component_by_class(unreal.SkyLightComponent)
+                if comp:
+                    comp.set_editor_property("intensity", 1.1)
+                break
+            try:
+                nxt = c.get_super_class()
+            except Exception:
+                break
+            if (not nxt) or (nxt == c):
+                break
+            c = nxt
 
 
 def _setup_floor():
@@ -191,6 +236,10 @@ def _setup_cabin_greybox():
     if smc:
         smc.set_static_mesh(mesh)
         cabin.set_actor_scale3d(unreal.Vector(6.0, 5.0, 3.0))
+        try:
+            smc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+        except Exception:
+            pass
 
     frame = _spawn_actor(
         unreal.StaticMeshActor,
@@ -244,18 +293,12 @@ def _setup_notes():
         unreal.log_error("subject14_setup_vertical_slice: could not load NoteActor class")
         return None, None
 
-    note1 = _spawn_actor(
-        note_cls,
-        _CABIN_CENTER + unreal.Vector(-280.0, 120.0, 130.0),
-        _ROT_ZERO,
-        "S14_Note01_CanopyMaintenance",
-    )
-    note2 = _spawn_actor(
-        note_cls,
-        _CABIN_CENTER + unreal.Vector(80.0, -80.0, 130.0),
-        _ROT_ZERO,
-        "S14_Note02_ObservationSummary",
-    )
+    # Exterior placements (player approaches from +Y). Left utility note, back observation note.
+    note1_loc = _CABIN_CENTER + unreal.Vector(-360.0, 180.0, 120.0)
+    note2_loc = _CABIN_CENTER + unreal.Vector(0.0, -320.0, 120.0)
+
+    note1 = _spawn_actor(note_cls, note1_loc, _ROT_ZERO, "S14_Note01_CanopyMaintenance")
+    note2 = _spawn_actor(note_cls, note2_loc, _ROT_ZERO, "S14_Note02_ObservationSummary")
 
     if note1:
         try:
@@ -301,7 +344,10 @@ def _setup_notes():
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: note2 defaults (%s)" % (exc,))
 
-    _spawn_point_light(_CABIN_CENTER + unreal.Vector(-280.0, 120.0, 180.0), 1200.0, "S14_Light_Note01")
+    _spawn_marker_post(note1_loc + unreal.Vector(0.0, 0.0, 70.0), "S14_Marker_Note01", 1.2)
+    _spawn_marker_post(note2_loc + unreal.Vector(0.0, 0.0, 70.0), "S14_Marker_Note02", 1.2)
+    _spawn_point_light(note1_loc + unreal.Vector(0.0, 0.0, 160.0), 180.0, "S14_Light_Note01", warm=True, radius=380.0)
+    _spawn_point_light(note2_loc + unreal.Vector(0.0, 0.0, 160.0), 200.0, "S14_Light_Note02", warm=True, radius=400.0)
     return note1, note2
 
 
@@ -352,8 +398,8 @@ def _setup_hatch_slice():
         unreal.log_error("subject14_setup_vertical_slice: hatch slice classes missing")
         return None, None
 
-    hatch_loc = _CABIN_CENTER + unreal.Vector(0.0, 0.0, 30.0)
-    breaker_loc = _CABIN_CENTER + unreal.Vector(480.0, 80.0, 110.0)
+    hatch_loc = _CABIN_CENTER + unreal.Vector(0.0, 40.0, 35.0)
+    breaker_loc = _CABIN_CENTER + unreal.Vector(420.0, 160.0, 110.0)
 
     note = _spawn_actor(note_cls, breaker_loc + unreal.Vector(80.0, 120.0, 20.0), _ROT_ZERO, "S14_DevNoteDay3")
     hatch = _spawn_actor(hatch_cls, hatch_loc, _ROT_ZERO, "S14_DevHatch")
@@ -403,8 +449,8 @@ def _setup_hatch_slice():
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: hatch defaults (%s)" % (exc,))
 
-    _spawn_point_light(breaker_loc + unreal.Vector(0.0, 0.0, 60.0), 1400.0, "S14_Light_Breaker", warm=True)
-    _spawn_point_light(hatch_loc + unreal.Vector(0.0, 0.0, 80.0), 900.0, "S14_Light_Hatch", warm=False)
+    _spawn_point_light(breaker_loc + unreal.Vector(0.0, 0.0, 55.0), 220.0, "S14_Light_Breaker", warm=True, radius=350.0)
+    _spawn_point_light(hatch_loc + unreal.Vector(0.0, 0.0, 70.0), 120.0, "S14_Light_Hatch", warm=False, radius=280.0)
     return hatch, breaker
 
 
@@ -424,6 +470,7 @@ def main():
     _ensure_player_start()
     _setup_cabin_greybox()
     _setup_outdoor_lighting()
+    _soften_scene_lights()
 
     note1, note2 = _setup_notes()
     _setup_story_triggers()
