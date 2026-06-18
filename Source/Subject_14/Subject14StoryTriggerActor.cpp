@@ -253,4 +253,6 @@ void ASubject14StoryTriggerActor::FireNow(AActor* const Instigator)
 		*GrantedStoryFlag.ToString(),
 		*ClearedStoryFlag.ToString(),
 		bAdvancePhaseOnFire ? 1 : 0);
+
+	Subsystem->SaveProgressToSlot();
 }

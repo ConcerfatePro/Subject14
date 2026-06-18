@@ -20,6 +20,9 @@ Build/
 *.VC.db
 *.db
 
+# Python cache
+Content/Python/__pycache__/
+
 # OS / misc
 .DS_Store
 Thumbs.db

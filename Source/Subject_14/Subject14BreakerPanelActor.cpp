@@ -37,6 +37,20 @@ ASubject14BreakerPanelActor::ASubject14BreakerPanelActor()
 		PanelMesh->SetStaticMesh(CubeFinder.Object);
 		PanelMesh->SetRelativeScale3D(FVector(0.35f, 0.25f, 0.55f));
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> SwitchFinder(TEXT("/Game/Audio/Tab.Tab"));
+	if (SwitchFinder.Succeeded())
+	{
+		SwitchThrowSound = SwitchFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> PowerFinder(TEXT("/Game/Audio/AmbientFacilityHum.AmbientFacilityHum"));
+	if (PowerFinder.Succeeded())
+	{
+		PowerOnHumSound = PowerFinder.Object;
+	}
+
+	ThoughtOnUse = TEXT("Power routed. The hatch should respond now.");
 }
 
 void ASubject14BreakerPanelActor::BeginPlay()
@@ -181,6 +195,15 @@ void ASubject14BreakerPanelActor::Subject14Interact_Implementation(AActor* const
 
 	if (!EvaluateGate(*Subsystem))
 	{
+		if (!ThoughtOnUse.IsEmpty())
+		{
+			USubject14ThoughtOverlayWidget::ShowThoughtLine(
+				this,
+				TEXT("No response. The panel is dead."),
+				Subject14BreakerPrivate::ThoughtHold,
+				Subject14BreakerPrivate::ThoughtFadeIn,
+				Subject14BreakerPrivate::ThoughtFadeOut);
+		}
 #if !UE_BUILD_SHIPPING
 		UE_LOG(LogTemp, Verbose, TEXT("%s: interact blocked by gate."), *GetName());
 #endif

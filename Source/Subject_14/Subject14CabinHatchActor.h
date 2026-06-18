@@ -155,6 +155,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Hatch|Feedback", meta = (MultiLine = "true"))
 	FString ThoughtOnOpenBlocked;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Hatch|Feedback", meta = (MultiLine = "true"))
+	FString ThoughtWhenGateBlocked;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Hatch|Story")
+	bool bSaveProgressOnStateChange = true;
+
 private:
 	bool bProximityCue = false;
 	bool bOpeningInterp = false;

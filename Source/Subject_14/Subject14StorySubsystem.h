@@ -94,6 +94,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Subject14|Story")
 	void SetCurrentObjectiveLine(const FString& ObjectiveLine);
 
+	/** Returns the text after the Objective: prefix, or empty if none is set. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Subject14|Story")
+	FString GetCurrentObjectiveLine() const;
+
 	/** Read-only copy for debug UIs / savegame; returns sorted for determinism. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Subject14|Story")
 	TArray<FName> GetAllStoryFlagsSorted() const;

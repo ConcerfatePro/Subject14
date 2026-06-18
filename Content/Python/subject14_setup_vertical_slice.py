@@ -6,16 +6,16 @@
 # Play flow (PIE):
 #   1. Night 1 director runs automatically on fresh save (IntroWake -> Night1Active).
 #   2. After Night 1 ends, story advances to Day 2 investigation and reloads Lvl_Dev.
-#   3. Explore cabin area, trigger Day 2 watched cue, read both notes.
-#   4. Walk to hatch advance trigger -> Day 3 breach prep.
+#   3. Walk toward cabin, trigger Day 2 cue, read both notes.
+#   4. Enter cabin threshold trigger -> Day 3 breach prep.
 #   5. Discover hatch -> breaker -> unlock -> open.
 
 import unreal
 
 _PROJECT_ROOT = "/home/devin/Desktop/Unreal Projects/Subject_14"
 _ROT_ZERO = unreal.Rotator(0.0, 0.0, 0.0)
+_CABIN_CENTER = unreal.Vector(0.0, -1100.0, 0.0)
 
-# Story flag names shared with Subject14StorySubsystem / Subject14StoryFlags.
 FLAG_DAY2_STARTED = "Day2Started"
 FLAG_DAY2_KEY_EVIDENCE = "Day2_KeyEvidence"
 FLAG_DAY3_BREACH_PREP = "Day3_BreachPrepStarted"
@@ -26,6 +26,7 @@ _SLICE_LABELS = (
     "S14_DevFloor",
     "S14_PlayerStart",
     "S14_CabinShell",
+    "S14_CabinDoorFrame",
     "S14_Night1Director",
     "S14_Note01_CanopyMaintenance",
     "S14_Note02_ObservationSummary",
@@ -33,6 +34,11 @@ _SLICE_LABELS = (
     "S14_Day3_AdvanceTrigger",
     "S14_DevHatch",
     "S14_DevBreaker",
+    "S14_BreakerMarker",
+    "S14_DevNoteDay3",
+    "S14_Light_Note01",
+    "S14_Light_Breaker",
+    "S14_Light_Hatch",
     "S14_CreatureHintAnchor",
     "S14_TreelineAnchor",
 )
@@ -80,6 +86,21 @@ def _destroy_labeled(labels):
             asub.destroy_actor(actor)
 
 
+def _is_player_start(actor):
+    c = actor.get_class()
+    while c:
+        try:
+            if c.get_name() == "PlayerStart":
+                return True
+            nxt = c.get_super_class()
+        except Exception:
+            break
+        if (not nxt) or (nxt == c):
+            break
+        c = nxt
+    return False
+
+
 def _load_static_mesh():
     for soft_path in ("/Engine/BasicShapes/Plane.Plane", "/Engine/BasicShapes/Plane"):
         try:
@@ -102,12 +123,24 @@ def _load_cube_mesh():
     return None
 
 
+def _spawn_point_light(loc, intensity, label, warm=True):
+    light = _spawn_actor(unreal.PointLight, loc, _ROT_ZERO, label)
+    if not light:
+        return None
+    comp = light.get_component_by_class(unreal.PointLightComponent)
+    if comp:
+        comp.set_editor_property("intensity", intensity)
+        comp.set_editor_property("attenuation_radius", 650.0)
+        if warm:
+            comp.set_editor_property("light_color", unreal.Color(255, 235, 200, 255))
+    return light
+
+
 def _setup_floor():
     asub = _actor_subsystem()
     for actor in asub.get_all_level_actors():
         try:
             if actor.get_actor_label() == "S14_DevFloor":
-                unreal.log("subject14_setup_vertical_slice: dev floor already present")
                 return
         except Exception:
             continue
@@ -121,42 +154,54 @@ def _setup_floor():
     smc = floor.get_component_by_class(unreal.StaticMeshComponent)
     if smc:
         smc.set_static_mesh(mesh)
-        floor.set_actor_scale3d(unreal.Vector(50.0, 50.0, 1.0))
+        floor.set_actor_scale3d(unreal.Vector(55.0, 55.0, 1.0))
 
 
-def _setup_player_start():
+def _ensure_player_start():
     asub = _actor_subsystem()
-    for actor in asub.get_all_level_actors():
+    for actor in list(asub.get_all_level_actors()):
         try:
-            if actor.get_actor_label() == "S14_PlayerStart":
-                unreal.log("subject14_setup_vertical_slice: player start already present")
-                return
+            lab = actor.get_actor_label()
         except Exception:
-            continue
-        c = actor.get_class()
-        while c:
-            if c.get_name() == "PlayerStart":
-                unreal.log("subject14_setup_vertical_slice: existing PlayerStart found")
-                return
-            nxt = c.get_super_class()
-            if (not nxt) or (nxt == c):
-                break
-            c = nxt
+            lab = ""
+        if lab == "S14_PlayerStart" or _is_player_start(actor):
+            asub.destroy_actor(actor)
 
-    ps = _spawn_actor(unreal.PlayerStart, unreal.Vector(0.0, 0.0, 100.0), unreal.Rotator(0.0, -90.0, 0.0), "S14_PlayerStart")
+    _spawn_actor(
+        unreal.PlayerStart,
+        unreal.Vector(0.0, 0.0, 100.0),
+        unreal.Rotator(0.0, -90.0, 0.0),
+        "S14_PlayerStart",
+    )
 
 
-def _setup_cabin_shell():
+def _setup_cabin_greybox():
     mesh = _load_cube_mesh()
     if not mesh:
-        unreal.log_warning("subject14_setup_vertical_slice: could not load Cube mesh for cabin shell")
+        unreal.log_warning("subject14_setup_vertical_slice: could not load Cube mesh for cabin")
         return
 
-    cabin = _spawn_actor(unreal.StaticMeshActor, unreal.Vector(0.0, -800.0, 150.0), _ROT_ZERO, "S14_CabinShell")
+    cabin = _spawn_actor(
+        unreal.StaticMeshActor,
+        _CABIN_CENTER + unreal.Vector(0.0, 0.0, 150.0),
+        _ROT_ZERO,
+        "S14_CabinShell",
+    )
     smc = cabin.get_component_by_class(unreal.StaticMeshComponent)
     if smc:
         smc.set_static_mesh(mesh)
-        cabin.set_actor_scale3d(unreal.Vector(5.5, 4.0, 2.8))
+        cabin.set_actor_scale3d(unreal.Vector(6.0, 5.0, 3.0))
+
+    frame = _spawn_actor(
+        unreal.StaticMeshActor,
+        _CABIN_CENTER + unreal.Vector(0.0, 250.0, 120.0),
+        _ROT_ZERO,
+        "S14_CabinDoorFrame",
+    )
+    fmc = frame.get_component_by_class(unreal.StaticMeshComponent)
+    if fmc:
+        fmc.set_static_mesh(mesh)
+        frame.set_actor_scale3d(unreal.Vector(2.2, 0.35, 2.4))
 
 
 def _setup_outdoor_lighting():
@@ -175,7 +220,7 @@ def _setup_night1_director(note_anchor, creature_anchor):
         unreal.log_error("subject14_setup_vertical_slice: could not load Night1Director class")
         return
 
-    director = _spawn_actor(director_cls, unreal.Vector(0.0, -400.0, 50.0), _ROT_ZERO, "S14_Night1Director")
+    director = _spawn_actor(director_cls, unreal.Vector(0.0, -350.0, 50.0), _ROT_ZERO, "S14_Night1Director")
     if not director:
         return
 
@@ -187,6 +232,8 @@ def _setup_night1_director(note_anchor, creature_anchor):
         director.set_editor_property("ReturnToMenuMapName", unreal.Name("Lvl_Dev"))
         director.set_editor_property("NoteSuggestedAnchor", note_anchor)
         director.set_editor_property("CreatureHintAnchor", creature_anchor)
+        director.set_editor_property("EndNightMessage", "Day breaks.\n\nThe woods are quiet again—for now.")
+        director.set_editor_property("EndPromptText", "Press any key to continue")
     except Exception as exc:
         unreal.log_warning("subject14_setup_vertical_slice: director defaults (%s)" % (exc,))
 
@@ -197,8 +244,18 @@ def _setup_notes():
         unreal.log_error("subject14_setup_vertical_slice: could not load NoteActor class")
         return None, None
 
-    note1 = _spawn_actor(note_cls, unreal.Vector(-180.0, -760.0, 120.0), _ROT_ZERO, "S14_Note01_CanopyMaintenance")
-    note2 = _spawn_actor(note_cls, unreal.Vector(220.0, -860.0, 120.0), _ROT_ZERO, "S14_Note02_ObservationSummary")
+    note1 = _spawn_actor(
+        note_cls,
+        _CABIN_CENTER + unreal.Vector(-280.0, 120.0, 130.0),
+        _ROT_ZERO,
+        "S14_Note01_CanopyMaintenance",
+    )
+    note2 = _spawn_actor(
+        note_cls,
+        _CABIN_CENTER + unreal.Vector(80.0, -80.0, 130.0),
+        _ROT_ZERO,
+        "S14_Note02_ObservationSummary",
+    )
 
     if note1:
         try:
@@ -213,6 +270,10 @@ def _setup_notes():
             note1.set_editor_property(
                 "ThoughtAfterRead",
                 "The rain stopped. For a second, it actually stopped.",
+            )
+            note1.set_editor_property(
+                "ThoughtWhenGateBlocked",
+                "Nothing useful here yet.",
             )
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: note1 defaults (%s)" % (exc,))
@@ -232,10 +293,15 @@ def _setup_notes():
                 "ThoughtAfterRead",
                 "Subject 14...? No. No, that can't be me.",
             )
-            note2.set_editor_property("ObjectiveAfterRead", "Find what is beneath the cabin floor.")
+            note2.set_editor_property("ObjectiveAfterRead", "Something runs under the floor.")
+            note2.set_editor_property(
+                "ThoughtWhenGateBlocked",
+                "Not time to read this yet.",
+            )
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: note2 defaults (%s)" % (exc,))
 
+    _spawn_point_light(_CABIN_CENTER + unreal.Vector(-280.0, 120.0, 180.0), 1200.0, "S14_Light_Note01")
     return note1, note2
 
 
@@ -245,27 +311,32 @@ def _setup_story_triggers():
         unreal.log_error("subject14_setup_vertical_slice: could not load StoryTriggerActor class")
         return
 
-    day2 = _spawn_actor(trigger_cls, unreal.Vector(0.0, -650.0, 100.0), _ROT_ZERO, "S14_Day2_WatchedTrigger")
+    day2 = _spawn_actor(trigger_cls, unreal.Vector(0.0, -520.0, 100.0), _ROT_ZERO, "S14_Day2_WatchedTrigger")
     if day2:
         try:
             day2.set_editor_property("RequiredStoryFlag", unreal.Name(FLAG_DAY2_STARTED))
             day2.set_editor_property("GrantedStoryFlag", unreal.Name("Day2_WatchedCue"))
             day2.set_editor_property("ThoughtLine", "Something out there isn't just wandering. It's looking.")
-            day2.set_editor_property("ObjectiveLine", "Search the cabin for anything that feels wrong.")
+            day2.set_editor_property("ObjectiveLine", "Read anything left in the cabin.")
             day2.set_editor_property("bFireOnOverlap", True)
             day2.set_editor_property("bOneShot", True)
             day2.set_editor_property("bOneShotPersistent", True)
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: day2 trigger (%s)" % (exc,))
 
-    day3 = _spawn_actor(trigger_cls, unreal.Vector(0.0, -780.0, 100.0), _ROT_ZERO, "S14_Day3_AdvanceTrigger")
+    day3 = _spawn_actor(
+        trigger_cls,
+        _CABIN_CENTER + unreal.Vector(0.0, 220.0, 90.0),
+        _ROT_ZERO,
+        "S14_Day3_AdvanceTrigger",
+    )
     if day3:
         try:
             day3.set_editor_property("RequiredStoryFlag", unreal.Name(FLAG_DAY2_KEY_EVIDENCE))
             day3.set_editor_property("GrantedStoryFlag", unreal.Name(FLAG_DAY3_BREACH_PREP))
             day3.set_editor_property("bAdvancePhaseOnFire", True)
             day3.set_editor_property("ThoughtLine", "This was built over something.")
-            day3.set_editor_property("ObjectiveLine", "Restore power to the hatch beneath the cabin.")
+            day3.set_editor_property("ObjectiveLine", "Restore local power.")
             day3.set_editor_property("bFireOnOverlap", True)
             day3.set_editor_property("bOneShot", True)
             day3.set_editor_property("bOneShotPersistent", True)
@@ -281,13 +352,24 @@ def _setup_hatch_slice():
         unreal.log_error("subject14_setup_vertical_slice: hatch slice classes missing")
         return None, None
 
-    note = _spawn_actor(note_cls, unreal.Vector(350.0, -720.0, 120.0), _ROT_ZERO, "S14_DevNoteDay3")
-    hatch = _spawn_actor(hatch_cls, unreal.Vector(0.0, -800.0, 25.0), _ROT_ZERO, "S14_DevHatch")
-    breaker = _spawn_actor(breaker_cls, unreal.Vector(350.0, -650.0, 100.0), _ROT_ZERO, "S14_DevBreaker")
+    hatch_loc = _CABIN_CENTER + unreal.Vector(0.0, 0.0, 30.0)
+    breaker_loc = _CABIN_CENTER + unreal.Vector(480.0, 80.0, 110.0)
+
+    note = _spawn_actor(note_cls, breaker_loc + unreal.Vector(80.0, 120.0, 20.0), _ROT_ZERO, "S14_DevNoteDay3")
+    hatch = _spawn_actor(hatch_cls, hatch_loc, _ROT_ZERO, "S14_DevHatch")
+    breaker = _spawn_actor(breaker_cls, breaker_loc, _ROT_ZERO, "S14_DevBreaker")
+
+    mesh = _load_cube_mesh()
+    if mesh:
+        marker = _spawn_actor(unreal.StaticMeshActor, breaker_loc + unreal.Vector(0.0, 0.0, 40.0), _ROT_ZERO, "S14_BreakerMarker")
+        mmc = marker.get_component_by_class(unreal.StaticMeshComponent)
+        if mmc:
+            mmc.set_static_mesh(mesh)
+            marker.set_actor_scale3d(unreal.Vector(0.45, 0.45, 0.45))
 
     if note:
         try:
-            note.set_editor_property("NoteId", unreal.Name("Note_Day3_Prep"))
+            note.set_editor_property("NoteId", unreal.Name("Note_03_EngineeringComplaint"))
             note.set_editor_property("bRegisterInStorySubsystem", True)
             note.set_editor_property("RequiredStoryFlag", unreal.Name(FLAG_DAY3_BREACH_PREP))
             note.set_editor_property("NoteTitle", "Engineering complaint (fragment)")
@@ -295,6 +377,7 @@ def _setup_hatch_slice():
                 "NoteBody",
                 "If Canopy Ops keeps masking the support resonance, one of these subjects is eventually going to hear it. You cannot build a fake forest on top of steel and expect silence forever.",
             )
+            note.set_editor_property("ObjectiveAfterRead", "The breaker should feed the hatch bus.")
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: day3 note (%s)" % (exc,))
 
@@ -307,24 +390,27 @@ def _setup_hatch_slice():
             breaker.set_editor_property("GrantedStoryFlag", unreal.Name(FLAG_HATCH_HAS_POWER))
             breaker.set_editor_property("ConsumedStoryFlag", unreal.Name(FLAG_BREAKER_USED))
             breaker.set_editor_property("bSaveImmediatelyAfterUse", True)
-            breaker.set_editor_property("ObjectiveAfterUse", "Return to the hatch and unlock it.")
+            breaker.set_editor_property("ObjectiveAfterUse", "Return to the hatch. Release the lock.")
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: breaker defaults (%s)" % (exc,))
 
     if hatch:
         try:
+            hatch.set_editor_property("RequiredStoryFlag", unreal.Name(FLAG_DAY3_BREACH_PREP))
             hatch.set_editor_property("ThoughtOnDiscovery", "This isn't a cabin.")
-            hatch.set_editor_property("ThoughtOnNoPower", "It needs power before the lock will release.")
-            hatch.set_editor_property("ThoughtOnOpenBlocked", "The seal is still holding.")
+            hatch.set_editor_property("ThoughtOnNoPower", "No power. The lock won't release.")
+            hatch.set_editor_property("ThoughtWhenGateBlocked", "Not yet. Keep searching.")
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: hatch defaults (%s)" % (exc,))
 
+    _spawn_point_light(breaker_loc + unreal.Vector(0.0, 0.0, 60.0), 1400.0, "S14_Light_Breaker", warm=True)
+    _spawn_point_light(hatch_loc + unreal.Vector(0.0, 0.0, 80.0), 900.0, "S14_Light_Hatch", warm=False)
     return hatch, breaker
 
 
 def _setup_anchors():
-    treeline = _spawn_actor(unreal.Actor, unreal.Vector(1200.0, -800.0, 0.0), _ROT_ZERO, "S14_TreelineAnchor")
-    creature = _spawn_actor(unreal.Actor, unreal.Vector(900.0, -950.0, 0.0), _ROT_ZERO, "S14_CreatureHintAnchor")
+    treeline = _spawn_actor(unreal.Actor, _CABIN_CENTER + unreal.Vector(1400.0, 0.0, 0.0), _ROT_ZERO, "S14_TreelineAnchor")
+    creature = _spawn_actor(unreal.Actor, _CABIN_CENTER + unreal.Vector(900.0, -150.0, 0.0), _ROT_ZERO, "S14_CreatureHintAnchor")
     return treeline, creature
 
 
@@ -334,10 +420,9 @@ def main():
         return
 
     _destroy_labeled(_SLICE_LABELS)
-
     _setup_floor()
-    _setup_player_start()
-    _setup_cabin_shell()
+    _ensure_player_start()
+    _setup_cabin_greybox()
     _setup_outdoor_lighting()
 
     note1, note2 = _setup_notes()
@@ -348,9 +433,7 @@ def main():
 
     unreal.EditorLoadingAndSavingUtils.save_dirty_packages(True, True)
     unreal.log(
-        "subject14_setup_vertical_slice: done. Save confirmed. "
-        "Fresh test: Subject14.DeleteStory then PIE. "
-        "After Night 1: read notes, overlap Day3 trigger, then hatch -> breaker -> open."
+        "subject14_setup_vertical_slice: done. Fresh test: Subject14.DeleteStory then PIE in Lvl_Dev."
     )
 
 

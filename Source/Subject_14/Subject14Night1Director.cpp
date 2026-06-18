@@ -253,10 +253,19 @@ bool ASubject14Night1Director::ShouldRunNightTimeline()
 		return true;
 	}
 
+	if (Subsystem->HasStoryFlag(Subject14StoryFlags::Night1Completed))
+	{
+#if !UE_BUILD_SHIPPING
+		UE_LOG(LogTemp, Log, TEXT("Subject14 Night1Director: skipping timeline (Night1Completed flag set)."));
+#endif
+		return false;
+	}
+
 	if (Phase == ESubject14StoryPhase::IntroWake)
 	{
 		Subsystem->AdvanceToNextStoryBeat();
 		Subsystem->SetStoryFlag(Subject14StoryFlags::Night1Started, true);
+		Subsystem->SetCurrentObjectiveLine(TEXT("Stay alert. Listen for what doesn't belong."));
 		Subsystem->SaveProgressToSlot();
 		return true;
 	}
@@ -267,6 +276,10 @@ bool ASubject14Night1Director::ShouldRunNightTimeline()
 		{
 			Subsystem->SetStoryFlag(Subject14StoryFlags::Night1Started, true);
 			Subsystem->SaveProgressToSlot();
+		}
+		if (Subsystem->GetCurrentObjectiveLine().IsEmpty())
+		{
+			Subsystem->SetCurrentObjectiveLine(TEXT("Stay alert. Listen for what doesn't belong."));
 		}
 		return true;
 	}
@@ -294,6 +307,12 @@ void ASubject14Night1Director::CommitNight1StoryProgress()
 		return;
 	}
 
+	if (Subsystem->HasStoryFlag(Subject14StoryFlags::Night1Completed)
+		&& (uint8)Subsystem->GetCurrentPhase() >= (uint8)ESubject14StoryPhase::Day2Investigation)
+	{
+		return;
+	}
+
 	Subsystem->SetStoryFlag(Subject14StoryFlags::Night1Completed, true);
 
 	const ESubject14StoryPhase Phase = Subsystem->GetCurrentPhase();
@@ -316,7 +335,7 @@ void ASubject14Night1Director::CommitNight1StoryProgress()
 		Subsystem->SetStoryFlag(Subject14StoryFlags::Day2Started, true);
 	}
 
-	Subsystem->SetCurrentObjectiveLine(TEXT("Search the cabin and nearby woods for anything that feels wrong."));
+	Subsystem->SetCurrentObjectiveLine(TEXT("Check the cabin. Something here isn't natural."));
 	Subsystem->SaveProgressToSlot();
 
 #if !UE_BUILD_SHIPPING

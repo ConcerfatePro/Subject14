@@ -308,6 +308,19 @@ void USubject14StorySubsystem::SetCurrentObjectiveLine(const FString& ObjectiveL
 	SetStoryFlag(ObjectiveFlag, true);
 }
 
+FString USubject14StorySubsystem::GetCurrentObjectiveLine() const
+{
+	for (const FName& Flag : GetAllStoryFlagsSorted())
+	{
+		const FString S = Flag.ToString();
+		if (S.StartsWith(TEXT("Objective:")))
+		{
+			return S.RightChop(10);
+		}
+	}
+	return FString();
+}
+
 void USubject14StorySubsystem::SetStoryFlag(const FName Flag, const bool bValue)
 {
 	if (Flag.IsNone())

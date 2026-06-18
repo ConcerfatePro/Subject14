@@ -64,6 +64,12 @@ protected:
 	void JumpPressed();
 	void JumpReleased();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Subject14|Interaction")
+	bool bShowInteractPrompt = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Subject14|Story")
+	bool bShowObjectiveHud = true;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Subject14", meta = (ClampMin = "50.0", ClampMax = "800.0"))
 	float InteractDistance = 384.0f;
 
@@ -185,6 +191,8 @@ private:
 	void MaybePlayLowBatteryWarning();
 	void TryStartAmbientBed();
 	void StopAmbientBed();
+	void UpdateInteractPrompt();
+	void UpdateObjectiveHud();
 
 	void RefreshAmbientBedVolume();
 	void FlickerTick();

@@ -11,6 +11,7 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/PlayerController.h"
 #include "Interactable.h"
+#include "Subject14StorySubsystem.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
@@ -305,6 +306,8 @@ void ASubject14FirstPersonCharacter::Tick(const float DeltaSeconds)
 	MaybeUpdateBatteryHud(DeltaSeconds);
 	MaybePlayLowBatteryWarning();
 	UpdateFootsteps(DeltaSeconds);
+	UpdateInteractPrompt();
+	UpdateObjectiveHud();
 }
 
 void ASubject14FirstPersonCharacter::MaybeUpdateBatteryHud(const float DeltaSeconds)
@@ -737,4 +740,60 @@ void ASubject14FirstPersonCharacter::TryInteract()
 	DrawDebugLine(GetWorld(), Start, Hit.ImpactPoint, FColor::Green, false, 1.5f, 0, 1.5f);
 #endif
 	IInteractable::Execute_Subject14Interact(HitActor, this);
+}
+
+void ASubject14FirstPersonCharacter::UpdateInteractPrompt()
+{
+	if (!bShowInteractPrompt || bNightSequenceInputBlocked || !FirstPersonCamera || !GEngine)
+	{
+		return;
+	}
+
+	const FVector Start = FirstPersonCamera->GetComponentLocation();
+	const FVector End = Start + FirstPersonCamera->GetForwardVector() * InteractDistance;
+
+	FHitResult Hit;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Subject14InteractPrompt), false, this);
+	if (!GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+	{
+		return;
+	}
+
+	AActor* const HitActor = Hit.GetActor();
+	if (!HitActor || !HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+	{
+		return;
+	}
+
+	GEngine->AddOnScreenDebugMessage(
+		99142,
+		0.0f,
+		FColor(200, 200, 205),
+		TEXT("Press E — Interact"));
+}
+
+void ASubject14FirstPersonCharacter::UpdateObjectiveHud()
+{
+	if (!bShowObjectiveHud || !GEngine)
+	{
+		return;
+	}
+
+	const USubject14StorySubsystem* const Story = USubject14StorySubsystem::Get(this);
+	if (!Story)
+	{
+		return;
+	}
+
+	const FString Objective = Story->GetCurrentObjectiveLine();
+	if (Objective.IsEmpty())
+	{
+		return;
+	}
+
+	GEngine->AddOnScreenDebugMessage(
+		99143,
+		0.0f,
+		FColor(180, 190, 200),
+		FString::Printf(TEXT("Objective: %s"), *Objective));
 }

@@ -76,6 +76,36 @@ ASubject14CabinHatchActor::ASubject14CabinHatchActor()
 		LidMesh->SetStaticMesh(CubeFinder.Object);
 		LidMesh->SetRelativeScale3D(FVector(0.85f, 0.85f, 0.08f));
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> HumFinder(TEXT("/Game/Audio/MonitorWhineLoop.MonitorWhineLoop"));
+	if (HumFinder.Succeeded())
+	{
+		HumLoopSound = HumFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> DiscoveryFinder(TEXT("/Game/Audio/pipeping.pipeping"));
+	if (DiscoveryFinder.Succeeded())
+	{
+		DiscoverySound = DiscoveryFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> UnlockFinder(TEXT("/Game/Audio/LockedDoor.LockedDoor"));
+	if (UnlockFinder.Succeeded())
+	{
+		UnlockSound = UnlockFinder.Object;
+		SealedNoPowerSound = UnlockFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> OpenFinder(TEXT("/Game/Audio/DoorOpen.DoorOpen"));
+	if (OpenFinder.Succeeded())
+	{
+		OpenSound = OpenFinder.Object;
+	}
+
+	ThoughtOnProximityCue = TEXT("The floor sounds hollow here.");
+	ThoughtOnDiscovery = TEXT("This isn't a cabin.");
+	ThoughtOnNoPower = TEXT("No power. The lock won't release.");
+	ThoughtWhenGateBlocked = TEXT("Not yet. Keep searching.");
 }
 
 void ASubject14CabinHatchActor::BeginPlay()
@@ -356,6 +386,13 @@ void ASubject14CabinHatchActor::TryCommitDiscoveryFromInteract(AActor* const Ins
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("%s: HatchDiscovered committed (%s)."), *GetName(), Instigator ? *Instigator->GetName() : TEXT("<none>"));
+
+	Subsystem->SetCurrentObjectiveLine(TEXT("Find the breaker. The hatch needs power."));
+	if (bSaveProgressOnStateChange)
+	{
+		Subsystem->SaveProgressToSlot();
+	}
+
 	RefreshPresentation();
 }
 
@@ -401,7 +438,15 @@ void ASubject14CabinHatchActor::TryUnlockFromPowered(AActor* const Instigator)
 		Subsystem->SetPhase(ESubject14StoryPhase::HatchUnlocked);
 	}
 
+	Subsystem->SetCurrentObjectiveLine(TEXT("Open it."));
+
 	UE_LOG(LogTemp, Log, TEXT("%s: hatch unlocked by %s."), *GetName(), *Instigator->GetName());
+
+	if (bSaveProgressOnStateChange)
+	{
+		Subsystem->SaveProgressToSlot();
+	}
+
 	RefreshPresentation();
 }
 
@@ -451,6 +496,11 @@ void ASubject14CabinHatchActor::FinishOpening()
 	{
 		Subsystem->SetStoryFlag(Subject14StoryFlags::HatchOpened, true);
 		Subsystem->SetPhase(ESubject14StoryPhase::FirstBreach);
+		Subsystem->SetCurrentObjectiveLine(TEXT("The floor is open. Something waits below."));
+		if (bSaveProgressOnStateChange)
+		{
+			Subsystem->SaveProgressToSlot();
+		}
 		UE_LOG(LogTemp, Warning, TEXT("%s: FIRST BREACH — HatchOpened + phase FirstBreach."), *GetName());
 	}
 
@@ -470,6 +520,15 @@ void ASubject14CabinHatchActor::Subject14Interact_Implementation(AActor* const I
 	USubject14StorySubsystem* const Subsystem = USubject14StorySubsystem::Get(this);
 	if (!Subsystem || !EvaluateStoryGate(*Subsystem))
 	{
+		if (Subsystem && !ThoughtWhenGateBlocked.IsEmpty())
+		{
+			USubject14ThoughtOverlayWidget::ShowThoughtLine(
+				this,
+				ThoughtWhenGateBlocked,
+				Subject14HatchPrivate::ThoughtHold,
+				Subject14HatchPrivate::ThoughtFadeIn,
+				Subject14HatchPrivate::ThoughtFadeOut);
+		}
 #if !UE_BUILD_SHIPPING
 		UE_LOG(LogTemp, Verbose, TEXT("%s: interact blocked by story gate."), *GetName());
 #endif

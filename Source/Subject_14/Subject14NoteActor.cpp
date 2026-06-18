@@ -221,6 +221,10 @@ void ASubject14NoteActor::Subject14Interact_Implementation(AActor* Instigator)
 			}
 		}
 		ApplyStoryProgression(*Subsystem, bFirstProgressionRead);
+		if (bRegisterInStorySubsystem && bFirstProgressionRead)
+		{
+			Subsystem->SaveProgressToSlot();
+		}
 		if (bOnlyFirstReadGrantsProgression && !bRegisterInStorySubsystem && bFirstProgressionRead)
 		{
 			bProgressionEffectsConsumed = true;
