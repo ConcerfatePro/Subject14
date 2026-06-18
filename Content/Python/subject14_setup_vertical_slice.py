@@ -3,18 +3,27 @@
 # Open Lvl_Dev first, then run:
 #   py "/home/devin/Desktop/Unreal Projects/Subject_14/Content/Python/subject14_setup_vertical_slice.py"
 #
-# Play flow (PIE):
-#   1. Night 1 director runs automatically on fresh save (IntroWake -> Night1Active).
-#   2. After Night 1 ends, story advances to Day 2 investigation and reloads Lvl_Dev.
-#   3. Walk toward cabin, trigger Day 2 cue, read both notes.
-#   4. Enter cabin threshold trigger -> Day 3 breach prep.
-#   5. Discover hatch -> breaker -> unlock -> open.
+# All interactables are placed OUTSIDE the cabin box with marker posts.
+# Player approaches from spawn (+Y) toward the cabin front face.
 
 import unreal
 
 _PROJECT_ROOT = "/home/devin/Desktop/Unreal Projects/Subject_14"
 _ROT_ZERO = unreal.Rotator(0.0, 0.0, 0.0)
-_CABIN_CENTER = unreal.Vector(0.0, -1100.0, 0.0)
+
+# Cabin shell: center (0, -1100, 150), scale (6, 5, 3) on 100uu cube.
+# Approx bounds: X [-300, 300], Y [-1350, -850], Z [0, 300].
+_CABIN_CENTER_XY = unreal.Vector(0.0, -1100.0, 0.0)
+_EXTERIOR_MARGIN = 160.0
+
+# World-space exterior slots (verified outside cabin AABB).
+LOC_NOTE1 = unreal.Vector(-460.0, -1020.0, 130.0)   # left side
+LOC_NOTE2 = unreal.Vector(0.0, -1540.0, 130.0)     # behind cabin
+LOC_HATCH = unreal.Vector(0.0, -700.0, 45.0)       # front porch, in front of door
+LOC_BREAKER = unreal.Vector(460.0, -1020.0, 110.0) # right side
+LOC_NOTE3 = unreal.Vector(520.0, -900.0, 130.0)    # near breaker
+LOC_DAY2_TRIGGER = unreal.Vector(0.0, -520.0, 100.0)
+LOC_DAY3_TRIGGER = unreal.Vector(0.0, -680.0, 100.0)
 
 FLAG_DAY2_STARTED = "Day2Started"
 FLAG_DAY2_KEY_EVIDENCE = "Day2_KeyEvidence"
@@ -36,12 +45,13 @@ _SLICE_LABELS = (
     "S14_DevBreaker",
     "S14_BreakerMarker",
     "S14_DevNoteDay3",
+    "S14_HatchPad",
     "S14_Marker_Note01",
     "S14_Marker_Note02",
+    "S14_Marker_Hatch",
     "S14_Light_Note01",
     "S14_Light_Note02",
     "S14_Light_Breaker",
-    "S14_Light_Hatch",
     "S14_CreatureHintAnchor",
     "S14_TreelineAnchor",
 )
@@ -126,7 +136,8 @@ def _load_cube_mesh():
     return None
 
 
-def _spawn_point_light(loc, intensity, label, warm=True, radius=420.0):
+def _spawn_soft_point_light(loc, intensity, label, warm=True, radius=240.0):
+    """Small cue light — kept dim to avoid ground glare."""
     light = _spawn_actor(unreal.PointLight, loc, _ROT_ZERO, label)
     if not light:
         return None
@@ -134,16 +145,16 @@ def _spawn_point_light(loc, intensity, label, warm=True, radius=420.0):
     if comp:
         comp.set_editor_property("intensity", intensity)
         comp.set_editor_property("attenuation_radius", radius)
-        comp.set_editor_property("source_radius", 12.0)
-        comp.set_editor_property("soft_source_radius", 20.0)
+        comp.set_editor_property("source_radius", 8.0)
+        comp.set_editor_property("soft_source_radius", 16.0)
         if warm:
-            comp.set_editor_property("light_color", unreal.Color(255, 210, 160, 255))
+            comp.set_editor_property("light_color", unreal.Color(255, 200, 150, 255))
         else:
-            comp.set_editor_property("light_color", unreal.Color(190, 210, 255, 255))
+            comp.set_editor_property("light_color", unreal.Color(170, 190, 220, 255))
     return light
 
 
-def _spawn_marker_post(loc, label, tall=1.4):
+def _spawn_marker_post(loc, label, scale_xyz=(0.22, 0.22, 1.8)):
     mesh = _load_cube_mesh()
     if not mesh:
         return None
@@ -151,34 +162,51 @@ def _spawn_marker_post(loc, label, tall=1.4):
     smc = post.get_component_by_class(unreal.StaticMeshComponent)
     if smc:
         smc.set_static_mesh(mesh)
-        post.set_actor_scale3d(unreal.Vector(0.18, 0.18, tall))
+        post.set_actor_scale3d(unreal.Vector(scale_xyz[0], scale_xyz[1], scale_xyz[2]))
     return post
 
 
+def _spawn_hatch_pad(loc):
+    mesh = _load_static_mesh()
+    if not mesh:
+        return None
+    pad = _spawn_actor(unreal.StaticMeshActor, loc, _ROT_ZERO, "S14_HatchPad")
+    smc = pad.get_component_by_class(unreal.StaticMeshComponent)
+    if smc:
+        smc.set_static_mesh(mesh)
+        pad.set_actor_scale3d(unreal.Vector(1.6, 1.6, 1.0))
+        pad.set_actor_location(loc + unreal.Vector(0.0, 0.0, -2.0), False, False)
+    return pad
+
+
 def _soften_scene_lights():
-    """Tame sun/skylight so point lights read as soft cues, not glare."""
+    """Dim every sun/skylight/point light in the level."""
     asub = _actor_subsystem()
     for actor in asub.get_all_level_actors():
-        c = actor.get_class()
-        while c:
-            name = c.get_name()
-            if name == "DirectionalLight":
-                comp = actor.get_component_by_class(unreal.DirectionalLightComponent)
-                if comp:
-                    comp.set_editor_property("intensity", 3.2)
-                break
-            if name == "SkyLight":
-                comp = actor.get_component_by_class(unreal.SkyLightComponent)
-                if comp:
-                    comp.set_editor_property("intensity", 1.1)
-                break
+        dlc = actor.get_component_by_class(unreal.DirectionalLightComponent)
+        if dlc:
+            dlc.set_editor_property("intensity", 1.15)
             try:
-                nxt = c.get_super_class()
+                dlc.set_editor_property("light_color", unreal.LinearColor(0.92, 0.9, 0.82, 1.0))
             except Exception:
-                break
-            if (not nxt) or (nxt == c):
-                break
-            c = nxt
+                pass
+
+        slc = actor.get_component_by_class(unreal.SkyLightComponent)
+        if slc:
+            slc.set_editor_property("intensity", 0.35)
+            try:
+                slc.set_editor_property("real_time_capture", False)
+            except Exception:
+                pass
+
+        plc = actor.get_component_by_class(unreal.PointLightComponent)
+        if plc:
+            try:
+                lab = actor.get_actor_label()
+            except Exception:
+                lab = ""
+            if not lab.startswith("S14_Light_"):
+                plc.set_editor_property("intensity", min(plc.get_editor_property("intensity"), 80.0))
 
 
 def _setup_floor():
@@ -228,7 +256,7 @@ def _setup_cabin_greybox():
 
     cabin = _spawn_actor(
         unreal.StaticMeshActor,
-        _CABIN_CENTER + unreal.Vector(0.0, 0.0, 150.0),
+        _CABIN_CENTER_XY + unreal.Vector(0.0, 0.0, 150.0),
         _ROT_ZERO,
         "S14_CabinShell",
     )
@@ -243,7 +271,7 @@ def _setup_cabin_greybox():
 
     frame = _spawn_actor(
         unreal.StaticMeshActor,
-        _CABIN_CENTER + unreal.Vector(0.0, 250.0, 120.0),
+        _CABIN_CENTER_XY + unreal.Vector(0.0, 250.0, 120.0),
         _ROT_ZERO,
         "S14_CabinDoorFrame",
     )
@@ -251,6 +279,10 @@ def _setup_cabin_greybox():
     if fmc:
         fmc.set_static_mesh(mesh)
         frame.set_actor_scale3d(unreal.Vector(2.2, 0.35, 2.4))
+        try:
+            fmc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+        except Exception:
+            pass
 
 
 def _setup_outdoor_lighting():
@@ -281,8 +313,6 @@ def _setup_night1_director(note_anchor, creature_anchor):
         director.set_editor_property("ReturnToMenuMapName", unreal.Name("Lvl_Dev"))
         director.set_editor_property("NoteSuggestedAnchor", note_anchor)
         director.set_editor_property("CreatureHintAnchor", creature_anchor)
-        director.set_editor_property("EndNightMessage", "Day breaks.\n\nThe woods are quiet again—for now.")
-        director.set_editor_property("EndPromptText", "Press any key to continue")
     except Exception as exc:
         unreal.log_warning("subject14_setup_vertical_slice: director defaults (%s)" % (exc,))
 
@@ -293,12 +323,8 @@ def _setup_notes():
         unreal.log_error("subject14_setup_vertical_slice: could not load NoteActor class")
         return None, None
 
-    # Exterior placements (player approaches from +Y). Left utility note, back observation note.
-    note1_loc = _CABIN_CENTER + unreal.Vector(-360.0, 180.0, 120.0)
-    note2_loc = _CABIN_CENTER + unreal.Vector(0.0, -320.0, 120.0)
-
-    note1 = _spawn_actor(note_cls, note1_loc, _ROT_ZERO, "S14_Note01_CanopyMaintenance")
-    note2 = _spawn_actor(note_cls, note2_loc, _ROT_ZERO, "S14_Note02_ObservationSummary")
+    note1 = _spawn_actor(note_cls, LOC_NOTE1, _ROT_ZERO, "S14_Note01_CanopyMaintenance")
+    note2 = _spawn_actor(note_cls, LOC_NOTE2, _ROT_ZERO, "S14_Note02_ObservationSummary")
 
     if note1:
         try:
@@ -310,16 +336,10 @@ def _setup_notes():
                 "NoteBody",
                 "Sector 14 climate routing remains within tolerance. Minor delay in west-zone rain dispersal. Audio masking loop recalibrated.",
             )
-            note1.set_editor_property(
-                "ThoughtAfterRead",
-                "The rain stopped. For a second, it actually stopped.",
-            )
-            note1.set_editor_property(
-                "ThoughtWhenGateBlocked",
-                "Nothing useful here yet.",
-            )
+            note1.set_editor_property("ThoughtAfterRead", "The rain stopped. For a second, it actually stopped.")
+            note1.set_editor_property("ThoughtWhenGateBlocked", "Nothing useful here yet.")
         except Exception as exc:
-            unreal.log_warning("subject14_setup_vertical_slice: note1 defaults (%s)" % (exc,))
+            unreal.log_warning("subject14_setup_vertical_slice: note1 (%s)" % (exc,))
 
     if note2:
         try:
@@ -332,22 +352,16 @@ def _setup_notes():
                 "NoteBody",
                 "Subject 14 demonstrates stable environmental adaptation. Cabin remains preferred shelter during initial dark-cycle stress periods.",
             )
-            note2.set_editor_property(
-                "ThoughtAfterRead",
-                "Subject 14...? No. No, that can't be me.",
-            )
+            note2.set_editor_property("ThoughtAfterRead", "Subject 14...? No. No, that can't be me.")
             note2.set_editor_property("ObjectiveAfterRead", "Something runs under the floor.")
-            note2.set_editor_property(
-                "ThoughtWhenGateBlocked",
-                "Not time to read this yet.",
-            )
+            note2.set_editor_property("ThoughtWhenGateBlocked", "Not time to read this yet.")
         except Exception as exc:
-            unreal.log_warning("subject14_setup_vertical_slice: note2 defaults (%s)" % (exc,))
+            unreal.log_warning("subject14_setup_vertical_slice: note2 (%s)" % (exc,))
 
-    _spawn_marker_post(note1_loc + unreal.Vector(0.0, 0.0, 70.0), "S14_Marker_Note01", 1.2)
-    _spawn_marker_post(note2_loc + unreal.Vector(0.0, 0.0, 70.0), "S14_Marker_Note02", 1.2)
-    _spawn_point_light(note1_loc + unreal.Vector(0.0, 0.0, 160.0), 180.0, "S14_Light_Note01", warm=True, radius=380.0)
-    _spawn_point_light(note2_loc + unreal.Vector(0.0, 0.0, 160.0), 200.0, "S14_Light_Note02", warm=True, radius=400.0)
+    _spawn_marker_post(LOC_NOTE1 + unreal.Vector(0.0, 0.0, 90.0), "S14_Marker_Note01")
+    _spawn_marker_post(LOC_NOTE2 + unreal.Vector(0.0, 0.0, 90.0), "S14_Marker_Note02")
+    _spawn_soft_point_light(LOC_NOTE1 + unreal.Vector(0.0, 0.0, 240.0), 42.0, "S14_Light_Note01", warm=True)
+    _spawn_soft_point_light(LOC_NOTE2 + unreal.Vector(0.0, 0.0, 240.0), 48.0, "S14_Light_Note02", warm=True)
     return note1, note2
 
 
@@ -357,25 +371,20 @@ def _setup_story_triggers():
         unreal.log_error("subject14_setup_vertical_slice: could not load StoryTriggerActor class")
         return
 
-    day2 = _spawn_actor(trigger_cls, unreal.Vector(0.0, -520.0, 100.0), _ROT_ZERO, "S14_Day2_WatchedTrigger")
+    day2 = _spawn_actor(trigger_cls, LOC_DAY2_TRIGGER, _ROT_ZERO, "S14_Day2_WatchedTrigger")
     if day2:
         try:
             day2.set_editor_property("RequiredStoryFlag", unreal.Name(FLAG_DAY2_STARTED))
             day2.set_editor_property("GrantedStoryFlag", unreal.Name("Day2_WatchedCue"))
             day2.set_editor_property("ThoughtLine", "Something out there isn't just wandering. It's looking.")
-            day2.set_editor_property("ObjectiveLine", "Read anything left in the cabin.")
+            day2.set_editor_property("ObjectiveLine", "Read anything left around the cabin.")
             day2.set_editor_property("bFireOnOverlap", True)
             day2.set_editor_property("bOneShot", True)
             day2.set_editor_property("bOneShotPersistent", True)
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: day2 trigger (%s)" % (exc,))
 
-    day3 = _spawn_actor(
-        trigger_cls,
-        _CABIN_CENTER + unreal.Vector(0.0, 220.0, 90.0),
-        _ROT_ZERO,
-        "S14_Day3_AdvanceTrigger",
-    )
+    day3 = _spawn_actor(trigger_cls, LOC_DAY3_TRIGGER, _ROT_ZERO, "S14_Day3_AdvanceTrigger")
     if day3:
         try:
             day3.set_editor_property("RequiredStoryFlag", unreal.Name(FLAG_DAY2_KEY_EVIDENCE))
@@ -398,20 +407,20 @@ def _setup_hatch_slice():
         unreal.log_error("subject14_setup_vertical_slice: hatch slice classes missing")
         return None, None
 
-    hatch_loc = _CABIN_CENTER + unreal.Vector(0.0, 40.0, 35.0)
-    breaker_loc = _CABIN_CENTER + unreal.Vector(420.0, 160.0, 110.0)
+    _spawn_hatch_pad(LOC_HATCH)
+    _spawn_marker_post(LOC_HATCH + unreal.Vector(60.0, 0.0, 50.0), "S14_Marker_Hatch", (0.18, 0.18, 1.4))
 
-    note = _spawn_actor(note_cls, breaker_loc + unreal.Vector(80.0, 120.0, 20.0), _ROT_ZERO, "S14_DevNoteDay3")
-    hatch = _spawn_actor(hatch_cls, hatch_loc, _ROT_ZERO, "S14_DevHatch")
-    breaker = _spawn_actor(breaker_cls, breaker_loc, _ROT_ZERO, "S14_DevBreaker")
+    hatch = _spawn_actor(hatch_cls, LOC_HATCH, _ROT_ZERO, "S14_DevHatch")
+    breaker = _spawn_actor(breaker_cls, LOC_BREAKER, _ROT_ZERO, "S14_DevBreaker")
+    note = _spawn_actor(note_cls, LOC_NOTE3, _ROT_ZERO, "S14_DevNoteDay3")
 
     mesh = _load_cube_mesh()
     if mesh:
-        marker = _spawn_actor(unreal.StaticMeshActor, breaker_loc + unreal.Vector(0.0, 0.0, 40.0), _ROT_ZERO, "S14_BreakerMarker")
+        marker = _spawn_actor(unreal.StaticMeshActor, LOC_BREAKER + unreal.Vector(0.0, 0.0, 50.0), _ROT_ZERO, "S14_BreakerMarker")
         mmc = marker.get_component_by_class(unreal.StaticMeshComponent)
         if mmc:
             mmc.set_static_mesh(mesh)
-            marker.set_actor_scale3d(unreal.Vector(0.45, 0.45, 0.45))
+            marker.set_actor_scale3d(unreal.Vector(0.5, 0.5, 0.5))
 
     if note:
         try:
@@ -438,7 +447,7 @@ def _setup_hatch_slice():
             breaker.set_editor_property("bSaveImmediatelyAfterUse", True)
             breaker.set_editor_property("ObjectiveAfterUse", "Return to the hatch. Release the lock.")
         except Exception as exc:
-            unreal.log_warning("subject14_setup_vertical_slice: breaker defaults (%s)" % (exc,))
+            unreal.log_warning("subject14_setup_vertical_slice: breaker (%s)" % (exc,))
 
     if hatch:
         try:
@@ -447,22 +456,21 @@ def _setup_hatch_slice():
             hatch.set_editor_property("ThoughtOnNoPower", "No power. The lock won't release.")
             hatch.set_editor_property("ThoughtWhenGateBlocked", "Not yet. Keep searching.")
         except Exception as exc:
-            unreal.log_warning("subject14_setup_vertical_slice: hatch defaults (%s)" % (exc,))
+            unreal.log_warning("subject14_setup_vertical_slice: hatch (%s)" % (exc,))
 
-    _spawn_point_light(breaker_loc + unreal.Vector(0.0, 0.0, 55.0), 220.0, "S14_Light_Breaker", warm=True, radius=350.0)
-    _spawn_point_light(hatch_loc + unreal.Vector(0.0, 0.0, 70.0), 120.0, "S14_Light_Hatch", warm=False, radius=280.0)
+    _spawn_soft_point_light(LOC_BREAKER + unreal.Vector(0.0, 0.0, 200.0), 50.0, "S14_Light_Breaker", warm=True)
     return hatch, breaker
 
 
 def _setup_anchors():
-    treeline = _spawn_actor(unreal.Actor, _CABIN_CENTER + unreal.Vector(1400.0, 0.0, 0.0), _ROT_ZERO, "S14_TreelineAnchor")
-    creature = _spawn_actor(unreal.Actor, _CABIN_CENTER + unreal.Vector(900.0, -150.0, 0.0), _ROT_ZERO, "S14_CreatureHintAnchor")
+    treeline = _spawn_actor(unreal.Actor, unreal.Vector(1400.0, -1100.0, 0.0), _ROT_ZERO, "S14_TreelineAnchor")
+    creature = _spawn_actor(unreal.Actor, unreal.Vector(900.0, -1250.0, 0.0), _ROT_ZERO, "S14_CreatureHintAnchor")
     return treeline, creature
 
 
 def main():
     if not unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world():
-        unreal.log_error("subject14_setup_vertical_slice: open Lvl_Dev (or another test map) first.")
+        unreal.log_error("subject14_setup_vertical_slice: open Lvl_Dev first.")
         return
 
     _destroy_labeled(_SLICE_LABELS)
@@ -478,9 +486,13 @@ def main():
     treeline, creature = _setup_anchors()
     _setup_night1_director(note2 or note1, creature)
 
+    _soften_scene_lights()
+
     unreal.EditorLoadingAndSavingUtils.save_dirty_packages(True, True)
     unreal.log(
-        "subject14_setup_vertical_slice: done. Fresh test: Subject14.DeleteStory then PIE in Lvl_Dev."
+        "subject14_setup_vertical_slice: done. "
+        "Notes: LEFT and BACK of cabin. Hatch: FRONT porch. Breaker: RIGHT side. "
+        "Run Subject14.DeleteStory then PIE."
     )
 
 
