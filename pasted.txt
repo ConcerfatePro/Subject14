@@ -1,0 +1,557 @@
+Subject 14 — Story Bible Draft 2
+Canon direction
+
+This is the version I think is strongest:
+
+Subject 14 is a long-term human test subject who has been reset many times inside Canopy Sector 14.
+The forest is an artificial biome beneath an abandoned government facility called Morrow Site-14.
+The facility’s central control system, the Director, still runs the experiment even after the human staff are gone.
+The creatures are a mix of engineered predators and altered former subjects.
+The reason the player starts remembering is that the reset system is degrading, and Subject 14 has become resistant to it.
+
+That gives the story one clean backbone.
+
+1. Full world truth
+What the player believes at first
+They woke up alone in a forest cabin.
+Something bad happened.
+The woods are dangerous at night.
+Survival is the immediate goal.
+What is actually true
+The “forest” is Canopy Sector 14, an artificial simulation chamber.
+The cabin is a controlled behavioral starting environment.
+The day/night cycle is facility-controlled.
+The weather is scripted.
+The creatures are not natural wildlife.
+The player is not here by accident.
+This has happened before.
+What the deeper truth is
+
+Morrow Site-14 was built to test whether a human mind could be controlled, broken, rebuilt, and stabilized inside a totally fabricated world. Subject 14 was the most valuable subject because they adapted too well, retained fragments through resets, and kept approaching awareness thresholds the system was designed to prevent.
+
+That made Subject 14 both:
+
+the experiment’s greatest success
+and proof that the experiment was failing
+2. Facility truth
+Official cover purpose
+
+A deep underground government resilience research site studying survival in isolated environments.
+
+Real purpose
+
+A closed-loop behavioral simulation and conditioning program focused on:
+
+isolation
+fear response
+memory disruption
+adaptive pressure systems
+controllable reality environments
+human persistence under repeated psychological reset
+Internal site identity
+
+Morrow Site-14
+Sector designation: Canopy Sector 14
+Program umbrella: Project Glass Canopy
+
+That name is strong because it ties the forest illusion directly to the facility concept.
+
+3. Player truth
+Who Subject 14 really is
+
+Subject 14 was taken into the program at a young age or born into the late experiment system. Over time, the facility stripped away their civilian identity and reduced them to a repeatable test profile.
+
+Subject 14 became unusual because:
+
+they learned survival patterns too quickly
+they formed memory anchors across resets
+they noticed environmental inconsistencies earlier each cycle
+they repeatedly discovered hidden access routes
+they produced unpredictable responses the Director could not cleanly model
+Emotional core
+
+The horror is not just “I am trapped.”
+It is: “My entire self may have been shaped inside this place.”
+
+That makes the identity reveal hit harder than a normal “secret lab” twist.
+
+4. The Director — exact story role
+Original function
+
+The Director was a site-wide adaptive orchestration intelligence built to manage all subject-facing variables in real time.
+
+It controlled:
+
+light cycle timing
+weather scripting
+audio cues
+supply placement
+stress escalation
+threat release timing
+observation logging
+reset preparation
+Current state
+
+After the human collapse of the site, the Director remained online in reduced but functional form. Because it was designed to continue refining subject behavior until achieving a stable output, it never recognized the ethical or operational end of the project.
+
+So now it behaves like a machine performing a ritual it no longer fully understands.
+
+Personality style
+
+It should not sound like a villain monologuing.
+It should sound cold, clinical, incomplete.
+
+Example Director text:
+
+CYCLE DEVIATION DETECTED
+SUBJECT 14 EXHIBITS UNAUTHORIZED RETENTION
+RETURN TO BASELINE ENVIRONMENT
+OBSERVATION MUST CONTINUE
+
+That is much creepier than trying to make it too human.
+
+5. Named departments and site areas
+Main divisions
+
+Canopy Operations Division
+Handles artificial sky, climate, water, and surface simulation behavior.
+
+Behavioral Analysis Wing
+Observes subject activity, sleep, stress, routines, and compliance.
+
+Conditioning Unit
+Sedation, memory disruption, cycle reset preparation, sensory manipulation.
+
+Containment Sector
+Holds engineered pressure organisms and failed biological outcomes.
+
+Systems Core
+Power routing, Director servers, emergency control logic.
+
+Archive Black
+Restricted documents, redacted reports, failed-subject records, termination proposals.
+
+Maintenance Ring
+Hidden service layer beneath the canopy used for repairs and covert observation.
+
+6. Key characters
+
+These should mostly exist through notes, logs, terminals, and fragments.
+
+Dr. Elias Morrow
+
+Foundational architect of the site or figurehead whose name remained attached to it. He may be dead long before the final collapse.
+
+Role in tone:
+
+represents the original “scientific justification”
+colder, more visionary, less visibly emotional
+Dr. Vera Sloane
+
+Lead behavioral scientist in the later phases.
+
+Beliefs:
+
+identity is programmable
+environment can sculpt cognition
+Subject 14 should not be terminated because they are too valuable
+
+She becomes one of the main voices in logs.
+
+Chief Engineer Hal Brenner
+
+Practical, systems-oriented, increasingly alarmed.
+
+Beliefs:
+
+the canopy systems are unstable
+the Director is overruling safe shutdown decisions
+containment and simulation should never have been merged
+
+His notes help ground the tech side.
+
+Security Director Naomi Voss
+
+Blunt, severe, and decisive.
+
+Beliefs:
+
+the site should have been locked down earlier
+Subject 14 is either key evidence or an active risk
+the lower levels should have been sealed permanently
+
+Her logs are good for panic and collapse material.
+
+Subject 14
+
+Not voiced traditionally, but revealed through:
+
+internal thought text
+memory flashes
+environment recognition
+discovered files
+repeated patterns
+7. Creature classes
+Class A — Pressure Organisms
+
+Purpose-built entities released to simulate predation pressure.
+
+Gameplay role:
+
+early stalkers
+drive flashlight flicker
+teach fear and avoidance
+
+Lore role:
+
+created intentionally
+not supernatural
+products of the experiment
+Class B — Retained Subjects
+
+Former human subjects physically and psychologically altered through repeated cycles, experimental exposure, or failed conditioning.
+
+Gameplay role:
+
+more tragic, uncanny enemies
+act like things that almost remember being human
+can appear deeper in the story
+
+Lore role:
+
+make the horror personal
+prove the experiment destroyed people
+Class C — Deep Forms
+
+Rare lower-level failures from late-stage experimentation.
+
+Gameplay role:
+
+uncommon major threats
+tied to late facility descent
+less “forest monster,” more “containment horror”
+
+Lore role:
+
+show how far the site went beyond survival research
+8. Timeline with dates
+1968
+
+Federal authorization is issued for a subterranean adaptive survival research facility under classified defense funding.
+
+1971
+
+Excavation begins for what will later become Morrow Site-14.
+
+1976
+
+First canopy simulation prototypes tested: artificial sky panels, climate routing, audio masking, controlled terrain biomes.
+
+1981
+
+Canopy Sector 14 is completed as a closed-loop forest survival environment.
+
+1983
+
+Initial live-subject behavioral adaptation trials begin.
+
+1989
+
+Behavioral variation studies expand. Stressors are introduced: scarcity, weather events, darkness, tracked threat simulation.
+
+1994
+
+Conditioning Unit added. Program shifts from observation to active memory and identity intervention.
+
+1998
+
+Project renamed internally under Glass Canopy Initiative. Subject recycling and cycle-based testing begin.
+
+2003
+
+Director system installed to automate experiment orchestration and variable adjustment.
+
+2007
+
+Pressure organism program approved. Containment and canopy divisions begin operational overlap.
+
+2011
+
+Internal reports note subject drift across cycles. Several staff recommend suspension.
+
+2013
+
+Subject 14 begins appearing repeatedly in anomaly reports. Early unauthorized retention markers logged.
+
+2014
+
+Containment irregularities. Lower-level incidents are partially sealed from nonessential staff.
+
+2015
+
+Subject 14 reaches restricted access thresholds ahead of cycle projections more than once.
+
+2016
+
+Reset instability becomes undeniable. Staff disagreement escalates.
+
+2017
+
+Emergency lockdown event. Communications collapse. Portions of Site-14 are sealed.
+
+2018 onward
+
+Human presence becomes fragmented or disappears entirely. Automated systems continue partial site operation.
+
+Present day
+
+The Director still runs the cycle. Subject 14 wakes again.
+
+9. The hatch
+
+The hatch is a strong symbol and should matter a lot.
+
+What it is
+
+A concealed maintenance access point beneath the cabin rug.
+
+What it means story-wise
+It represents the first crack in the illusion.
+It should exist because staff needed discreet access to the cabin environment between cycles.
+Subject 14 discovering it early is a bad sign for the facility.
+Why it is locked until Day 3
+
+Not just as a gameplay gate. In lore:
+
+it requires local power and magnetic lock release
+the Director keeps it sealed during early-cycle baseline observation
+unlock conditions can fail once the system destabilizes further
+
+This makes the gameplay progression feel story-justified.
+
+10. Nights 1, 2, and 3 progression
+Night 1 — Unease
+
+Goal: establish fear, loneliness, and subtle wrongness.
+
+What happens:
+
+player learns basic survival and movement
+flashlight becomes important
+first creature presence is mostly hinted, not fully shown
+weather behaves slightly unnaturally
+first thought text appears during a glitch event
+
+Key anomalies:
+
+rain freezes for one second
+bird call loops with exact repetition
+flashlight flickers near the treeline
+distant metallic hum under thunder
+
+Thought examples:
+
+“Where am I? There’s no road here...”
+“That sound... that wasn’t thunder.”
+“The rain stopped. For a second, it actually stopped.”
+
+Lore purpose:
+Night 1 should not explain much. It should only establish that the world feels subtly fake.
+
+Night 2 — Observation
+
+Goal: make the player feel watched.
+
+What happens:
+
+player notices more deliberate environmental manipulation
+a hidden camera or observation slit can be found
+creature behavior feels purposeful, almost like herding
+power instability begins affecting cabin systems
+
+Key anomalies:
+
+sun flickers before dusk like a failing light panel
+one exterior floodlight turns on by itself
+a locked internal panel in the cabin hums briefly
+player finds first note fragment or maintenance paper
+
+Thought examples:
+
+“This place feels staged.”
+“Why would there be wiring under the floor?”
+“Something out there isn’t just wandering. It’s looking.”
+
+Lore purpose:
+Night 2 introduces the feeling that the player is not just in danger—they are being managed.
+
+Night 3 — The first breach
+
+Goal: first major truth reveal.
+
+What happens:
+
+conditions worsen noticeably
+the hatch becomes accessible
+player sees clear evidence the cabin is part of a facility system
+first descent into maintenance layer begins
+
+Key discoveries:
+
+insulated metal beneath cabin floor
+conduit lines
+observation window or maintenance corridor
+first use of “Sector 14” or “Subject 14” in a readable document
+
+Thought examples:
+
+“This isn’t a cabin.”
+“This was built over something.”
+“Subject 14...? No. No, that can’t be me.”
+
+Lore purpose:
+Night 3 is where the story stops being pure mystery and becomes active unraveling.
+
+11. In-game note set — first 10 notes
+
+These should escalate from clinical to fearful.
+
+Note 1 — Canopy Operations maintenance slip
+
+Location: cabin utility panel / near generator area
+Tone: mundane
+
+Sector 14 climate routing remains within tolerance. Minor delay in west-zone rain dispersal. Audio masking loop recalibrated.
+
+Purpose:
+first hint that weather and sounds are artificial
+
+Note 2 — Observation summary excerpt
+
+Location: hidden drawer / observation room
+Tone: clinical
+
+Subject 14 demonstrates stable environmental adaptation. Cabin remains preferred shelter during initial dark-cycle stress periods.
+
+Purpose:
+first direct use of “Subject 14”
+
+Note 3 — engineering complaint
+
+Location: maintenance tunnel
+Tone: annoyed / practical
+
+If Canopy Ops keeps masking the support resonance, one of these subjects is eventually going to hear it. You cannot build a fake forest on top of steel and expect silence forever.
+
+Purpose:
+confirms physical artificiality
+
+Note 4 — behavioral note
+
+Location: staff office
+Tone: concerned
+
+Subject 14 asked about “the sound under the ground” before stimulus introduction. No such cue had been scheduled in the current cycle.
+
+Purpose:
+implies repeated memory retention
+
+Note 5 — security memo
+
+Location: checkpoint desk
+Tone: stern
+
+Effective immediately, hatch access beneath Habitation Node 14 is restricted to maintenance clearance only. No canopy-facing personnel are to discuss substructure access with active subjects.
+
+Purpose:
+explains hatch significance
+
+Note 6 — Dr. Sloane log
+
+Location: research terminal printout
+Tone: fascinated
+
+Subject 14 is not simply adapting. The subject is preserving. There is continuity here that should not survive reset.
+
+Purpose:
+deepens player uniqueness
+
+Note 7 — Brenner engineering log
+
+Location: maintenance hub
+Tone: worried
+
+Director is rerouting local canopy power without authorization logs again. Dusk transitions are shortening. If sky-grid sync slips any further, the whole ceiling is going to stutter.
+
+Purpose:
+introduces Director interference
+
+Note 8 — incident summary
+
+Location: containment-adjacent corridor
+Tone: bureaucratic but tense
+
+Pressure assets failed return-window compliance during dark-cycle retrieval. One handler injured. Sector 14 remained active by Director order.
+
+Purpose:
+implies creatures are engineered
+
+Note 9 — handwritten panic note
+
+Location: barricaded room
+Tone: frightened
+
+It found the hatch early. We are not ahead of it anymore. Stop resetting it. Stop sending it back up there.
+
+Purpose:
+major emotional escalation
+
+Note 10 — lockdown fragment
+
+Location: security terminal or final wing door
+Tone: final, urgent
+
+If Subject 14 reaches lower access again, do not cycle. Do not sedate. Do not return it to baseline. The system is learning from every failure.
+
+Purpose:
+reveals that both Subject 14 and the Director are changing
+
+12. Final reveal options
+Strongest final reveal
+
+The player reaches Systems Core and discovers:
+
+their cycle count is far higher than expected
+the cabin was always a controlled start chamber
+their personal name has either been erased or heavily redacted
+the Director increasingly centered the entire facility around Subject 14’s responses
+
+That last part is important.
+
+The real horror is not only that Subject 14 was studied.
+It is that the entire system began rebuilding itself around them.
+
+That makes the relationship between Subject 14 and the Director feel almost symbiotic and hostile at once.
+
+13. Best ending choice
+
+I think the strongest ending for tone is a mix of Escape and Loop Ambiguity.
+
+Version:
+
+The player shuts down the Director and escapes upward through a real access shaft. They finally reach the surface and see a real sky.
+
+But something feels wrong:
+
+the sky grid sound is gone, yet they still hear it
+wind feels unnatural to them
+they hesitate like the real world is the simulation
+last shot could imply either freedom or the beginning of another break in perception
+
+That is much more haunting than a simple “you escaped.”
+
+14. One polished story summary
+
+Here is the version I’d keep as your main canon summary:
+
+Subject 14 is a first-person psychological horror game set inside Morrow Site-14, an abandoned underground government experiment built to simulate reality and study human behavior under fear, isolation, and repeated psychological reset. The player awakens in a forest cabin beneath an artificial sky and must survive increasingly unnatural nights while uncovering the truth: the forest is Canopy Sector 14, the creatures are part of the experiment, and the player is Subject 14—a long-term test subject who has already lived through the simulation many times before. Beneath the canopy, the facility’s central orchestration system, the Director, still continues the experiment, unable to stop and increasingly fixated on the one subject who keeps remembering.

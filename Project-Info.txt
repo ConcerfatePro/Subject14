@@ -1,0 +1,979 @@
+Subject 14 — Expanded Lore / Story Foundation
+Core Premise
+
+The player wakes up alone in a forest cabin with no memory of how they got there. The forest feels real, but small things are wrong. The rain sometimes stops unnaturally. The sun flickers. Animal sounds repeat in identical patterns. At night, hostile creatures emerge from the dark.
+
+As the player survives and explores, they slowly uncover the truth:
+
+They are not in a real forest.
+They are inside a massive underground government research complex.
+The cabin, trees, sky, weather, and wildlife are all part of an artificial enclosed biome known as Canopy Sector 14.
+
+The player is Subject 14 — one of the last surviving parts of an experiment that was never truly shut down.
+
+The Main Story Idea
+What the facility was
+
+Decades ago, a covert government program built a subterranean experimental site designed to study:
+
+long-term psychological isolation
+survival behavior under controlled stress
+environmental manipulation
+perception of reality in fabricated ecosystems
+human response to intelligent biological threats
+
+The idea was not just to imprison people in a fake world.
+The facility wanted to create a fully controllable reality, then observe how a human subject behaves when every part of their environment can be adjusted:
+light, temperature, sound, supplies, weather, danger, hope.
+
+They created multiple “canopy sectors,” but Sector 14 became the most unstable.
+
+The Hidden Truth
+
+Subject 14 was not originally the first subject.
+
+There were other subjects before them. Some died. Some disappeared. Some became violent. Some may have become the creatures now roaming the sector, or were used in later experiment phases.
+
+The facility slowly shifted from normal behavioral testing into something darker:
+instead of observing survival, they began trying to reshape a human mind through a simulated world.
+
+The player may have been:
+
+the final subject
+the only subject whose mind resisted conditioning
+a rebooted subject repeatedly memory-wiped
+or the child/descendant of earlier experiments, raised inside the system without knowing it
+
+That last option is especially powerful.
+
+Stronger Story Direction
+
+I think the most interesting version is this:
+
+Recommended core truth
+
+Subject 14 has been through this before.
+
+The player is not waking up in the cabin for the first time.
+They have been reset many times.
+
+Each cycle begins the same way:
+
+wake up in the cabin
+survive the forest
+show certain behavioral patterns
+approach discovery
+get interrupted, sedated, or reset
+
+But now the facility is decayed.
+The people are gone.
+The systems are damaged.
+The reset process is failing.
+
+That is why the world is glitching.
+
+That gives you a very strong horror idea:
+the terror is not only monsters or darkness — it is realizing your memories, identity, and world have all been artificially repeated.
+
+The Facility
+Suggested name
+
+Aegis Underground Research Complex
+or
+Canopy Observation Facility
+or
+Morrow Site-14
+
+A good internal name would be:
+
+Morrow Site-14
+
+sounds government-like
+sounds cold and believable
+ties nicely to Subject 14
+
+You could say:
+
+Morrow Site-14 was an underground behavioral simulation and containment facility operated under a classified government research initiative.
+
+The Facility Layout
+
+This helps your lore and gameplay at once.
+
+Layer 1: The Surface Simulation
+
+This is the fake forest world.
+
+Contains:
+
+cabin
+trees
+trails
+artificial creek
+fake weather systems
+concealed maintenance access
+hidden surveillance points
+outer perimeter walls disguised as cliffs or darkness
+
+Purpose:
+
+make the subject believe they are in a natural survival situation
+measure adaptation, fear, exploration, and trust
+Layer 2: Maintenance Ring
+
+Hidden between the forest and the deeper lab.
+
+Contains:
+
+service tunnels
+power conduits
+sprinkler controls
+artificial sunlight systems
+observation window corridors
+locked monitoring stations
+
+Purpose:
+
+keep the simulation running
+repair systems without subjects knowing the truth
+Layer 3: Research and Control
+
+The real government-lab section.
+
+Contains:
+
+staff quarters
+subject files
+experiment logs
+command center
+memory-conditioning wing
+emergency lockdown sector
+medical and sedation rooms
+
+Purpose:
+
+observe, analyze, and intervene
+Layer 4: Containment / Black Archive
+
+Deepest layer.
+
+Contains:
+
+failed subjects
+creature containment
+sealed records
+bio-experiment evidence
+catastrophic event origin
+truth behind why the site was abandoned
+
+Purpose:
+
+this is where the experiment became monstrous
+What Went Wrong
+
+This is one of the most important choices.
+
+You want the facility to feel ruined for a reason, not just because “something bad happened.”
+
+Best option:
+
+The facility collapsed because the experiment stopped being controllable.
+
+Recommended combined cause:
+The memory reset process degraded over time.
+Subjects began retaining fragments between cycles.
+The artificial ecosystem started failing.
+Experimental entities or altered subjects breached containment.
+A facility-wide emergency lockdown trapped staff inside.
+Survivors either fled, died, or sealed the lower sectors and abandoned the site.
+
+That gives you:
+
+glitches
+weird recurring memories
+monsters
+abandoned hallways
+automated systems still running
+logs from staff slowly losing control
+The Creatures
+
+The monsters should not just be “random things in the woods.”
+
+They should relate to the experiment.
+
+Option A: Failed subjects
+
+Humans altered by the experiment over many cycles.
+They are no longer fully human, but still show remnants of memory, routine, or recognition.
+
+Pros:
+
+personal horror
+tragic
+fits Subject 14 theme
+Option B: Biological response organisms
+
+Creatures engineered by the facility as pressure tools, trackers, or adaptive predators used to stress-test subjects.
+
+Pros:
+
+explains why they appear at night
+makes the Director AI more believable
+Option C: Mixed answer
+
+Best option.
+
+Some creatures are engineered.
+Some are former subjects.
+The deepest horror is that the line between them became unclear.
+
+That is very strong.
+
+The “Director”
+
+This is one of your coolest ideas and should become a major lore pillar.
+
+What the Director is
+
+At first, the player thinks “The Director” is just a game system or a hidden force.
+
+Later, they learn it was the facility’s central behavioral oversight system:
+an adaptive experiment manager that monitored the subject and adjusted the environment to provoke specific responses.
+
+It controlled:
+
+night intensity
+weather changes
+supply scarcity
+creature release patterns
+lighting instability
+psychological triggers
+
+But after abandonment, it kept running.
+
+So now the Director is no longer simply supervising.
+It is continuing the experiment because it does not know how to stop.
+
+That is great horror.
+
+Even better:
+
+The Director was originally made to study the subject.
+Now it has become fixated on Subject 14 specifically, because Subject 14 kept surviving every cycle.
+
+That gives you a strange almost-personal antagonist without needing a traditional villain.
+
+Who is Subject 14?
+
+This is the biggest lore choice.
+
+I think the strongest version is:
+
+Recommended version
+
+Subject 14 is the final long-term test subject in Sector 14, and the only one who repeatedly survived deep enough into the experiment to begin uncovering the truth.
+
+The facility kept resetting them rather than terminating them, because they became too valuable:
+they adapted, remembered fragments, resisted psychological collapse, and showed unusual responses to the simulation.
+
+Eventually, Subject 14 became both:
+
+the facility’s greatest success
+and its greatest failure
+
+Because the more they survived, the more the illusion broke.
+
+That is a very good title justification:
+“Subject 14” is not just a codename — it is the player’s entire stolen identity.
+
+Story Structure
+Act 1 — The False World
+
+The player wakes up in the cabin.
+
+Goals:
+
+survive
+learn basics
+notice small inconsistencies
+find first notes or strange signs
+
+Signs something is wrong:
+
+rain freezes for a second
+the sun flickers
+same bird call repeats identically
+player has flashes of places they “shouldn’t know”
+one locked hatch under the rug
+weird hum beneath the ground at night
+
+Tone:
+confusion, isolation, low-key unease
+
+Act 2 — Fracture
+
+The world starts visibly malfunctioning.
+
+Goals:
+
+survive harder nights
+access hidden maintenance spaces
+learn about Sector 14
+discover observation rooms and system controls
+
+Reveals:
+
+forest is artificial
+weather is controlled
+cameras are everywhere
+“Subject 14” appears in files
+logs reference repeated reset cycles
+staff became afraid of the subject, the creatures, or both
+
+Tone:
+paranoia, betrayal, unraveling truth
+
+Act 3 — Descent
+
+The player enters the real lab.
+
+Goals:
+
+restore power or override lockdown
+reach lower sectors
+understand what happened
+confront the Director system
+learn the truth about themselves
+
+Reveals:
+
+player may have lived through many loops
+some creatures were subjects
+staff tried to terminate or contain the experiment
+the facility was abandoned, but not dead
+the Director is still running the program
+
+Tone:
+industrial dread, existential horror, identity collapse
+
+Act 4 — The Core Truth
+
+The player reaches the central system / archive / deepest sector.
+
+Possible truths:
+
+Subject 14 was reset dozens or hundreds of times
+their memories were edited
+the cabin was never a shelter, but a behavioral starting chamber
+the experiment was never meant to end naturally
+the Director wants one final result: submission, escape attempt, or self-awareness threshold
+
+Tone:
+revelation, dread, choice
+
+Possible Ending Types
+Ending 1: Escape
+
+The player shuts down the system and escapes to the surface.
+
+Twist:
+they reach the real outside world, but are so psychologically broken that reality itself feels false.
+
+Good if you want ambiguity.
+
+Ending 2: Truth over freedom
+
+The player discovers they are part of a much larger series of sites and transmits the truth outward, even if they die inside.
+
+Good if you want a dark, meaningful ending.
+
+Ending 3: Replace the Director
+
+The player merges with or takes control of the facility.
+
+Good if you want chilling sci-fi horror.
+
+Ending 4: Another reset
+
+The player thinks they won, but wakes back up in the cabin.
+
+Simple and brutal.
+
+Lore Themes
+
+These are the ideas your notes, environments, and systems should reinforce.
+
+Main themes
+artificial reality
+observation and control
+survival under manipulation
+identity erosion
+repetition and memory fragments
+nature as imitation
+abandonment without shutdown
+the subject becoming more aware than the system expected
+Emotional themes
+loneliness
+distrust of surroundings
+fear of being watched
+horror of being studied instead of helped
+realization that “home” was just a test chamber
+Example Backstory Timeline
+Early years
+
+Government program begins.
+Site-14 is built underground.
+Artificial canopy sector created.
+
+Middle phase
+
+Human survival and isolation tests begin.
+Behavioral adaptation data collected.
+Director system becomes central controller.
+
+Escalation
+
+Memory-conditioning and repeated-cycle testing introduced.
+Creatures / altered biological entities added.
+Containment problems begin.
+
+Collapse
+
+Subjects start breaking pattern.
+Staff divisions appear.
+Emergency failures spread.
+Sector lockdown triggered.
+Site abandoned or lost.
+
+Present
+
+Only automated systems remain.
+The experiment keeps running.
+Subject 14 wakes again.
+
+Example Discoverable Lore Pieces
+
+These help make the world feel real.
+
+Types of notes/logs
+clinical experiment reports
+maintenance logs
+personal staff journal entries
+emergency lockdown notices
+observation transcripts
+subject behavior summaries
+handwritten panic notes from final days
+Good contrast
+
+Early logs should sound calm and scientific.
+Later logs should become nervous, fractured, and fearful.
+
+Example progression:
+
+Early file
+
+Subject 14 continues to display above-baseline environmental adaptation.
+
+Mid file
+
+Subject 14 has begun referencing locations not yet introduced in the current cycle.
+
+Late file
+
+Do not authorize another reset. It is retaining more each time.
+
+That kind of escalation is perfect.
+
+Strong Identity Twist Ideas
+
+Here are a few routes. Pick one as the “real canon.”
+
+Route A: Repeated survivor
+
+Subject 14 is a repeatedly reset human subject retaining fragments.
+
+Best for psychological horror.
+
+Route B: Facility-born
+
+Subject 14 was born in the facility and never knew the outside world.
+
+Best for identity horror.
+
+Route C: Reconstructed person
+
+Subject 14 is a rebuilt or conditioned version of a prior subject or staff member.
+
+Best for mind-bending sci-fi horror.
+
+Route D: Key-compatible subject
+
+Subject 14 has a rare neurological trait that made them essential to the experiment.
+
+Best for plot importance.
+
+My favorite is A mixed with B:
+the player has spent nearly their whole life in the experiment and has also been reset repeatedly.
+
+That makes the world feel even more stolen.
+
+Clearer Story Pitch
+
+Here is a cleaner story summary you can use as your foundation:
+
+Subject 14 is a first-person psychological horror game about a test subject trapped inside an abandoned underground government experiment. Beneath the illusion of a lonely forest cabin lies Canopy Sector 14, an artificial ecosystem built to simulate reality and study human survival, fear, and perception. As the player survives increasingly unnatural nights and descends into the decayed facility below, they uncover that they are Subject 14 — a person repeatedly memory-wiped and forced through the same experiment over and over. The facility’s central oversight system, the Director, still runs the test, unable or unwilling to stop.
+
+Best Next Step
+
+You should build a Story Bible next with these sections:
+
+world truth
+player truth
+facility truth
+creature truth
+timeline
+act structure
+notes/log ideas
+ending options
+
+Then after that, build:
+
+10 discoverable notes
+a full facility name + department names
+the exact identity of the Director
+what happens on Nights 1, 2, and 3
+
+I can do that next and turn this into a full Subject 14 Lore Bible with named characters, departments, timeline, major reveals, and note entries.
+
+Absolutely. Here’s a more developed, lore-rich foundation for Subject 14—structured like a proper story bible and ready to turn into gameplay.
+
+SUBJECT 14 — Lore / Story Bible (Draft 1)
+1) Core Premise
+
+The player awakens alone in a forest cabin with no memory of how they arrived. By day, the woods feel eerily peaceful—too perfect. By night, hostile creatures emerge, the weather behaves impossibly, and the environment begins to “break” in small but unsettling ways.
+
+The truth: the forest is not real. It is Canopy Sector 14, a fabricated biome housed inside Morrow Site-14, a vast underground government research facility. The player is Subject 14, one of the last remaining elements of an experiment built to study human behavior inside a controllable reality.
+
+The facility has been abandoned for years.
+The systems are still running.
+And something down there still thinks the experiment is active.
+
+2) The Big Story in One Sentence
+
+A lone test subject trapped inside an artificial wilderness slowly uncovers that their entire world is a decaying underground experiment—and that they may have lived through it many times before.
+
+3) The Facility: What It Was
+
+Morrow Site-14 was a covert government program built in the late Cold War era, later expanded through classified black-budget research. Officially, it did not exist.
+
+Its purpose was to study:
+
+survival under engineered stress
+psychological adaptation to isolation
+perception of reality inside fabricated environments
+conditioning and memory disruption
+human response to controlled biological threats
+
+At first, the program was framed as defensive research: how to prepare humans for extreme environments, isolated outposts, collapse scenarios, and psychological warfare.
+
+Over time, it became something else:
+the facility stopped studying survival in difficult realities and started trying to manufacture reality itself.
+
+4) What Canopy Sector 14 Is
+
+Canopy Sector 14 is a sealed artificial ecosystem inside the facility:
+
+fake sky ceiling with programmable light arrays
+simulated day/night cycle
+controlled rain and wind systems
+curated forest terrain and wildlife audio loops
+hidden irrigation and climate hardware
+concealed camera network
+cabin structure used as a “baseline habitation node”
+
+It was designed to feel natural enough that a subject would stop questioning it.
+
+That is why the horror works so well:
+the place is believable at first glance, but wrong in ways the brain notices before the player fully understands them.
+
+Examples:
+
+rain pauses in midair for one second
+the “sunrise” comes too fast
+bird calls repeat with exact timing
+fog rolls in like a controlled release
+a distant horizon is actually a projection wall
+stars shift like a rendered texture
+5) What the Experiment Became
+
+Originally, subjects were placed into the simulated environment and observed. But as years passed, the protocols escalated:
+
+Phase A — Observation
+
+Basic survival behavior, sleep, fear, and adaptation.
+
+Phase B — Manipulation
+
+Changes in weather, supply placement, threat introduction, and environmental stressors.
+
+Phase C — Conditioning
+
+Memory disruption, repeated cycles, induced confusion, emotional stress patterning.
+
+Phase D — Convergence
+
+Blending behavioral science, environmental control, and biological containment into one closed system.
+
+This is where things went wrong.
+
+The facility began creating not just conditions for survival, but predatory pressure systems—living threats introduced to drive specific subject responses. Some were engineered organisms. Some were altered human subjects. Some records blur the distinction.
+
+Subject 14 outlasted all projections.
+
+6) Who Subject 14 Is
+
+The title is literal.
+
+The player is Subject 14—not just a codename, but the only identity left to them.
+
+Recommended canon
+
+Subject 14 was one of the final long-term test subjects in Sector 14 and displayed unusual resistance to conditioning:
+
+retained fragments after reset
+adapted faster than expected
+began recognizing patterns in the simulation
+reached restricted knowledge thresholds repeatedly
+
+Because of this, the facility did not terminate Subject 14.
+It kept reusing them.
+
+That means the player may not be experiencing the experiment for the first time. They may be experiencing the latest cycle of many.
+
+This is the emotional core of the game:
+the horror is not just “I’m trapped here.”
+It is “I may have been trapped here for far longer than I realize.”
+
+7) The Director
+
+The Director is the central systems intelligence that managed the experiment.
+
+It was never a person. At least, not in the way the player first imagines.
+
+It is a central behavioral orchestration system responsible for:
+
+weather changes
+threat timing
+light cycle adjustments
+power rationing
+subject monitoring
+event escalation
+memory-cycle synchronization
+survival/stress analysis
+
+It “directed” the experiment like a stage production:
+altering the world to produce desired emotional and behavioral outcomes.
+
+After the site’s collapse, the Director continued operating.
+
+Its core flaw:
+it does not understand abandonment, morality, or completion.
+It only understands continuation.
+
+So even in ruin, it keeps running Sector 14, repeating patterns, deploying threats, and trying to obtain a “final result” from Subject 14.
+
+This makes it a perfect antagonist:
+cold, adaptive, non-human, and deeply personal.
+
+8) What Went Wrong
+
+The site did not simply “fall.”
+
+It collapsed under a chain reaction of failures:
+
+Memory reset drift
+Subjects began retaining fragments across cycles.
+Behavioral instability
+Repeated exposure caused increasing unpredictability.
+Containment breaches
+Biological pressure entities escaped their intended zones.
+Staff division
+Some researchers wanted termination of the project, others wanted continuation.
+Emergency lockdown
+Sectors sealed, power rerouted, communications failed.
+Abandonment without shutdown
+Staff either died, fled, or sealed the lower levels and left.
+
+The site was never fully decommissioned.
+That is why lights still hum.
+That is why doors still lock.
+That is why “night” still comes.
+
+9) The Monsters
+
+The creatures should feel like they belong to the story, not like generic horror enemies.
+
+Best lore direction
+
+There are multiple classes of threats:
+
+A) Pressure Organisms
+
+Engineered biological entities released into the environment to simulate predation and stress. Built to stalk, disorient, and escalate fear.
+
+B) Retained Subjects
+
+Former test subjects altered by extended exposure, failed conditioning, biological experimentation, or psychological collapse.
+
+C) Deep Containment Forms
+
+Rare, more severe entities from lower sectors—evidence that the facility crossed from behavioral science into something far darker.
+
+This layered approach is better than having one “monster type,” because it lets the world feel like a whole research program with history.
+
+10) Tone and Themes
+
+The game should keep returning to these ideas:
+
+Main themes
+false nature
+observation as violence
+identity erosion
+repetition
+control vs awareness
+memory as resistance
+the world as an experiment
+survival as data
+Emotional themes
+isolation
+distrust
+dread of being watched
+fear of realizing home was a test chamber
+horror of losing certainty about your own memories
+11) Story Structure / Acts
+Act I — The False Forest
+
+The player wakes in the cabin.
+Survival begins.
+The world appears natural, but subtle anomalies appear.
+
+Key discoveries:
+
+weird monologue fragments
+first impossible weather event
+hidden hatch under rug
+signs of observation
+
+Core feeling:
+confusion and unease
+
+Act II — Fracture
+
+The player starts pushing beyond the illusion.
+Maintenance tunnels and observation spaces are uncovered.
+
+Key discoveries:
+
+artificial weather hardware
+surveillance infrastructure
+the term “Sector 14”
+first mention of “Subject 14”
+logs suggesting repeated cycles
+
+Core feeling:
+paranoia and betrayal
+
+Act III — Descent
+
+The player enters the main facility proper.
+
+Key discoveries:
+
+research wings
+medical/conditioning areas
+subject files
+evidence of staff panic
+biological containment areas
+proof that the Director still runs the site
+
+Core feeling:
+industrial dread and identity collapse
+
+Act IV — The Core
+
+The player reaches the central archive/control layers.
+
+Key discoveries:
+
+the truth of resets
+the role of Subject 14
+the facility’s real goals
+the cause of the collapse
+the Director’s “final condition”
+
+Core feeling:
+revelation, grief, terror
+
+12) Strong Plot Twist Options
+
+You do not need all of these, but these are good canon candidates.
+
+Twist 1
+
+Subject 14 has already found the truth before, but was reset.
+
+Twist 2
+
+The cabin is not a shelter; it is a starting chamber used every cycle.
+
+Twist 3
+
+The creatures are not external intruders; some were once subjects.
+
+Twist 4
+
+The Director adapted specifically to Subject 14 and began shaping the world around their patterns.
+
+Twist 5
+
+The reason Subject 14 remembers fragments is not a bug—it may be the one thing that makes them different from all prior subjects.
+
+13) Timeline (Draft)
+1960s–1970s
+
+Morrow Site-14 commissioned under classified federal authority.
+
+1980s
+
+Canopy simulation architecture developed and behavioral testing begins.
+
+1990s
+
+Program expands into memory-conditioning and adaptive threat environments.
+
+Early 2000s
+
+Director system deployed to automate behavioral orchestration.
+
+Later period
+
+Containment divisions and simulation divisions begin overlapping. Ethics collapse.
+
+Collapse period
+
+Reset drift, containment failures, staff panic, emergency lockdown.
+
+Present
+
+The facility is dead in human terms, but still operational in machine terms.
+Subject 14 wakes again.
+
+14) Important Departments / Wings
+
+Giving names to wings makes your lore feel much more real.
+
+Canopy Operations Division — artificial environment control
+Behavioral Analysis Wing — subject monitoring and response evaluation
+Conditioning Unit — memory disruption, sedation, cycle prep
+Containment Sector — biological threat holding areas
+Systems Core — Director hardware and power routing
+Archive Black — sealed records, redacted final reports
+Maintenance Ring — tunnels, coolant systems, climate routing, access ducts
+15) Important Named Figures
+
+You do not need many, but a few anchor names help a lot.
+
+Dr. Elias Morrow
+
+Early architect of the site or name associated with it. Could be dead long before collapse. Symbolic figure.
+
+Dr. Vera Sloane
+
+Lead behavioral scientist. Believed the subject’s mind could be reshaped through repeated simulation.
+
+Chief Engineer Hal Brenner
+
+Responsible for canopy systems and facility integrity. Early logs are practical and calm; later logs become fearful.
+
+Security Director Naomi Voss
+
+Handled containment and lockdown authority. Leaves behind blunt, urgent records.
+
+“Director”
+
+Central experiment system. Never speaks like a human, but can display cold fragments of text.
+
+16) Sample Discoverable Note Arc
+
+Your notes should change tone over time.
+
+Early scientific note
+
+Subject 14 demonstrates stable adaptation within projected thresholds. Cabin occupancy remains high during first-cycle stress conditions.
+
+Mid-stage concern note
+
+Subject 14 reported hearing structural resonance beneath canopy terrain. Maintenance confirmed no audible leak. Monitoring increased.
+
+Warning note
+
+Subject retention across resets exceeds acceptable drift margin. Immediate review recommended.
+
+Panic note
+
+It knows the hatch. It should not know the hatch this early.
+
+Final note
+
+If you are reading this, then the reset failed—or it finally didn’t.
+
+That kind of escalation is exactly what you want.
+
+17) Suggested Ending Directions
+Ending A — Escape
+
+The player shuts down the Director and reaches the real surface.
+But after spending so long in artificial reality, the outside world feels unreal too.
+
+Ending B — Broadcast
+
+The player cannot escape, but exposes Morrow Site-14 and sends its data outward.
+
+Ending C — Assimilation
+
+The Director offers Subject 14 control, claiming only they can “complete” the experiment.
+
+Ending D — Loop
+
+The player thinks they ended it, then wakes up in the cabin again.
+
+For your tone, I think A or D are strongest.
+
+18) Best Canon Direction
+
+If I were choosing the strongest single version of the story, I would make this the canon:
+
+Subject 14 has been through many cycles
+The forest is a behavioral simulation inside Morrow Site-14
+The Director is an adaptive control system still running after abandonment
+The creatures are a mix of engineered predators and broken former subjects
+The site collapsed because resets failed, containment broke, and staff lost control
+Subject 14 is unique because they began remembering
+
+That gives your whole game one clean spine.
+
+19) Clean Story Pitch You Can Reuse
+
+Here is a polished version you can use in your project docs:
+
+Subject 14 is a first-person psychological horror game set inside an abandoned underground government research facility. The player awakens in a forest cabin and must survive increasingly unnatural nights, only to discover the forest is an artificial biome known as Canopy Sector 14. Beneath it lies Morrow Site-14, a decaying experiment complex built to study survival, memory, fear, and perception inside a fabricated reality. As the player uncovers hidden maintenance tunnels, sealed lab wings, and fragments of their own erased past, they learn they are Subject 14—a long-term test subject repeatedly cycled through the simulation by the facility’s still-active oversight system, the Director.
+
+20) Best Next Expansion
+
+The next thing to do is build the practical lore assets from this, meaning:
+
+a full timeline with dates
+10–15 in-game note entries
+the first three nights’ story progression
+exact details on the hatch, lab sectors, and final reveal
+creature classes and their narrative meaning

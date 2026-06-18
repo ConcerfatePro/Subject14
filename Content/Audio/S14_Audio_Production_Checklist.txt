@@ -1,0 +1,103 @@
+Subject 14 — Audio / music production checklist (FL Studio → export 16-bit WAV)
+================================================================================
+Pick ONE project sample rate (44.1 kHz OR 48 kHz) and use it for everything.
+Footsteps: consider mono or narrow stereo. Leave headroom; game stacks ambience + music + SFX.
+
+--------------------------------------------------------------------------------
+A. NOW — wired in project today (assign in editor / class defaults)
+--------------------------------------------------------------------------------
+
+A1. Footsteps — generic interior (concrete / tile / “facility”)
+    - 3 to 6 different soft one-shots, same “family”
+    - Per hit: ~50–120 ms body + tiny tail
+    - Export EACH as its own WAV (later: randomize in a Sound Cue)
+    - → Subject14FirstPersonCharacter: FootstepSound (or Cue)
+
+A2. Footsteps — optional extra packs (for later surface variety)
+    - Wood pack: 3–6 hits (slightly hollow)
+    - Metal pack: 3–6 hits (thin ring)
+    - Grit / dirt pack: 3–6 hits
+    - (Not wired to materials yet — still worth recording now.)
+
+A3. Ambient bed — “facility hum”
+    - 60–180 s seamless TRUE loop
+    - Low HVAC + faint electrical + very subtle movement (LFO / slow filter)
+    - No loud transients; mono or narrow stereo
+    - Enable LOOPING on the Sound Wave in Unreal (or build a looping Sound Cue)
+    - → Subject14FirstPersonCharacter: AmbientBedSound + bEnableAmbientBed
+
+A4. Ambient bed — “void / pressure” (alternate mood)
+    - Same loop discipline as A3, darker, slower, less mid energy
+
+A5. Battery pickup — “charge / latch”
+    - One shot ~150–400 ms, reads as “gain” not explosion
+    - → Subject14BatteryPickupActor: PickupSound
+
+--------------------------------------------------------------------------------
+B. SOON — very common next implementation targets
+--------------------------------------------------------------------------------
+
+B1. Door — open / close
+    - Hinge creak: ~0.5–2.5 s (usable in segments if needed)
+    - Soft latch / thud: short
+    - Optional: separate open vs close identity
+    - → Subject14SimpleDoorActor (when we add audio hooks)
+
+B2. Interact — “denied / empty” (non-spammy if player mashes E)
+    - Very short soft tick or muted thump
+
+B3. Flashlight — on / off
+    - Plastic / switch click: ~20–80 ms each (on and off can differ slightly)
+
+B4. Flashlight — low battery warning (optional)
+    - One soft tick or tiny glitch: ~0.2–0.6 s, sparse use
+
+B5. UI blip set (4 tiny sounds, same palette)
+    - Hover, select, tab, back
+
+--------------------------------------------------------------------------------
+C. LATER — horror pacing + world read
+--------------------------------------------------------------------------------
+
+C1. Stingers / dread hits
+    - 3 lengths: ~0.3 s, ~1.0 s, ~3–6 s (sub weight + noise wash; avoid busy melody unless intentional)
+
+C2. Presence layers (abstract, not literal voice)
+    - Very quiet air / room tone layers to duck under music + ambience
+
+C3. Radio / PA garble bed
+    - Loopable 5–20 s filtered voice noise (intelligibility optional)
+
+C4. Tape / CRT micro-textures
+    - Hiss bursts, head clunk, motor whine loops (short loops OK)
+
+C5. Environmental one-shots (not necessarily looped)
+    - Pipe ping, distant metal stress, drip, far door slam (each ~1–4 s)
+
+C6. Threat / creature — non-verbal
+    - 2–3 “pressure” rumbles + 1 “close encounter” scrape (keep unidentifiable until design locks)
+
+--------------------------------------------------------------------------------
+D. MUSIC STEMS (if you want FL “tracks”, not only SFX)
+--------------------------------------------------------------------------------
+
+D1. Exploration stem loop
+    - ~90–150 s seamless loop, low motion, light percussion (must not fight footsteps)
+
+D2. Tension stem loop
+    - Same length class, adds pulsing low or rhythmic texture, still leaves SFX space
+
+D3. “Rare safe-ish” loop
+    - ~20–40 s loop, slightly warmer — use sparingly
+
+--------------------------------------------------------------------------------
+E. EXPORT / QA (every file)
+--------------------------------------------------------------------------------
+
+- Format: WAV, 16-bit PCM, consistent sample rate project-wide
+- Loops: zero-click loop points (audition loop in FL before export)
+- Loudness: conservative; avoid brickwall on master
+- Naming: S14_Footstep_Int_01.wav style (project prefix + category + index)
+
+================================================================================
+End of checklist

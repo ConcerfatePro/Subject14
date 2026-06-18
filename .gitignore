@@ -1,0 +1,26 @@
+# Unreal Engine build and cache
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+.cursor/
+
+# Visual Studio / solution files
+*.sln
+*.opensdf
+*.sdf
+*.suo
+*.user
+*.VC.db
+*.db
+
+# OS / misc
+.DS_Store
+Thumbs.db
+*.log
