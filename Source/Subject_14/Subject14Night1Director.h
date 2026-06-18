@@ -136,7 +136,7 @@ public:
 	float CreatureHintFlashlightFlickerStepSeconds = 0.038f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Night1|End", meta = (MultiLine = "true"))
-	FString EndNightMessage = TEXT("Night 1 ends here.\n\n(To be continued.)");
+	FString EndNightMessage = TEXT("Day breaks.\n\nThe forest is quiet again—for now.");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Night1|End", meta = (ClampMin = "0.5", ClampMax = "10.0"))
 	float EndNightFadeSeconds = 2.85f;
@@ -174,7 +174,7 @@ public:
 	bool bShowEndPromptAfterCaption = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Night1|End|Return", meta = (MultiLine = "false"))
-	FString EndPromptText = TEXT("Press any key to return to main menu");
+	FString EndPromptText = TEXT("Press any key to continue");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Night1|End|Return")
 	bool bAllowAnyKeyReturn = true;
@@ -216,7 +216,22 @@ public:
 	/** Invoked by USubject14NightEndPromptWidget when the player accepts the end prompt (debounced). */
 	void HandleEndNightPromptCommitted();
 
+	/** When true, BeginPlay consults the story subsystem before starting the night timeline. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Night1|Story")
+	bool bAutoStartFromStoryState = true;
+
+	/** When true with bAutoStartFromStoryState, the director only runs during IntroWake / Night1Active. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Night1|Story")
+	bool bOnlyRunDuringNight1Phase = true;
+
+	/** When true, EndNight advances story to Day 2 investigation and saves progress before reloading. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Night1|Story")
+	bool bCommitStoryProgressOnEndNight = true;
+
 private:
+	bool ShouldRunNightTimeline();
+	void CommitNight1StoryProgress();
+
 	float NightElapsed = 0.0f;
 	int32 NextScheduleIndex = 0;
 	bool bNightActive = false;

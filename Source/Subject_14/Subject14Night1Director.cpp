@@ -2,6 +2,7 @@
 #include "Subject14FirstPersonCharacter.h"
 #include "Subject14NightEndPromptWidget.h"
 #include "Subject14NoteActor.h"
+#include "Subject14StorySubsystem.h"
 #include "Subject14ThoughtOverlayWidget.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Engine/World.h"
@@ -226,6 +227,106 @@ void ASubject14Night1Director::SortActiveSchedule()
 	});
 }
 
+bool ASubject14Night1Director::ShouldRunNightTimeline()
+{
+	if (!bAutoStartFromStoryState)
+	{
+		return true;
+	}
+
+	USubject14StorySubsystem* const Subsystem = USubject14StorySubsystem::Get(this);
+	if (!Subsystem)
+	{
+		return true;
+	}
+
+	const ESubject14StoryPhase Phase = Subsystem->GetCurrentPhase();
+
+	if (!bOnlyRunDuringNight1Phase)
+	{
+		if (Phase == ESubject14StoryPhase::IntroWake)
+		{
+			Subsystem->AdvanceToNextStoryBeat();
+			Subsystem->SetStoryFlag(Subject14StoryFlags::Night1Started, true);
+			Subsystem->SaveProgressToSlot();
+		}
+		return true;
+	}
+
+	if (Phase == ESubject14StoryPhase::IntroWake)
+	{
+		Subsystem->AdvanceToNextStoryBeat();
+		Subsystem->SetStoryFlag(Subject14StoryFlags::Night1Started, true);
+		Subsystem->SaveProgressToSlot();
+		return true;
+	}
+
+	if (Phase == ESubject14StoryPhase::Night1Active)
+	{
+		if (!Subsystem->HasStoryFlag(Subject14StoryFlags::Night1Started))
+		{
+			Subsystem->SetStoryFlag(Subject14StoryFlags::Night1Started, true);
+			Subsystem->SaveProgressToSlot();
+		}
+		return true;
+	}
+
+#if !UE_BUILD_SHIPPING
+	UE_LOG(
+		LogTemp,
+		Log,
+		TEXT("Subject14 Night1Director: skipping timeline (story phase %d is past Night 1)."),
+		(int32)Phase);
+#endif
+	return false;
+}
+
+void ASubject14Night1Director::CommitNight1StoryProgress()
+{
+	if (!bCommitStoryProgressOnEndNight)
+	{
+		return;
+	}
+
+	USubject14StorySubsystem* const Subsystem = USubject14StorySubsystem::Get(this);
+	if (!Subsystem)
+	{
+		return;
+	}
+
+	Subsystem->SetStoryFlag(Subject14StoryFlags::Night1Completed, true);
+
+	const ESubject14StoryPhase Phase = Subsystem->GetCurrentPhase();
+	if (Phase == ESubject14StoryPhase::Night1Active)
+	{
+		Subsystem->AdvanceToNextStoryBeat();
+		Subsystem->AdvanceToNextStoryBeat();
+	}
+	else if (Phase == ESubject14StoryPhase::Night1Complete)
+	{
+		Subsystem->AdvanceToNextStoryBeat();
+	}
+	else if ((uint8)Phase < (uint8)ESubject14StoryPhase::Day2Investigation)
+	{
+		Subsystem->SetPhase(ESubject14StoryPhase::Day2Investigation);
+	}
+
+	if (!Subsystem->HasStoryFlag(Subject14StoryFlags::Day2Started))
+	{
+		Subsystem->SetStoryFlag(Subject14StoryFlags::Day2Started, true);
+	}
+
+	Subsystem->SetCurrentObjectiveLine(TEXT("Search the cabin and nearby woods for anything that feels wrong."));
+	Subsystem->SaveProgressToSlot();
+
+#if !UE_BUILD_SHIPPING
+	UE_LOG(
+		LogTemp,
+		Log,
+		TEXT("Subject14 Night1Director: story advanced to Day 2 investigation and saved."));
+#endif
+}
+
 void ASubject14Night1Director::BeginPlay()
 {
 	Super::BeginPlay();
@@ -238,6 +339,14 @@ void ASubject14Night1Director::BeginPlay()
 
 	if (World->GetNetMode() == NM_DedicatedServer)
 	{
+		SetActorTickEnabled(false);
+		return;
+	}
+
+	if (!ShouldRunNightTimeline())
+	{
+		bNightActive = false;
+		bNightEnded = true;
 		SetActorTickEnabled(false);
 		return;
 	}
@@ -811,6 +920,8 @@ void ASubject14Night1Director::Event_EndNight()
 	{
 		return;
 	}
+
+	CommitNight1StoryProgress();
 
 	bNightEnded = true;
 	bNightActive = false;

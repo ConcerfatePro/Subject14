@@ -11,4 +11,6 @@ class SUBJECT_14_API ASubject14GameMode : public AGameModeBase
 
 public:
 	ASubject14GameMode();
+
+	virtual void StartPlay() override;
 };
