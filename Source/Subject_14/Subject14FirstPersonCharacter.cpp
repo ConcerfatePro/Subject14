@@ -1,5 +1,6 @@
 #include "Subject14FirstPersonCharacter.h"
 #include "Subject14FlashlightBatteryWidget.h"
+#include "Subject14StoryTriggerActor.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AudioComponent.h"
@@ -718,28 +719,43 @@ void ASubject14FirstPersonCharacter::TryInteract()
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Subject14Interact), false, this);
 	Params.bReturnPhysicalMaterial = false;
 
-	if (!GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+	TArray<FHitResult> Hits;
+	if (!GetWorld()->LineTraceMultiByChannel(Hits, Start, End, ECC_Visibility, Params))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Subject14 TryInteract: trace miss (visibility channel, %.0f uu)"), InteractDistance);
 		return;
 	}
 
-	AActor* const HitActor = Hit.GetActor();
-	if (!HitActor || !HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+	for (const FHitResult& CandidateHit : Hits)
 	{
-		UE_LOG(
-			LogTemp,
-			Log,
-			TEXT("Subject14 TryInteract: hit '%s' but it does not implement IInteractable"),
-			HitActor ? *HitActor->GetName() : TEXT("(null)"));
+		AActor* const HitActor = CandidateHit.GetActor();
+		if (!HitActor || !HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+		{
+			continue;
+		}
+
+		if (const ASubject14StoryTriggerActor* const OverlapOnlyTrigger = Cast<ASubject14StoryTriggerActor>(HitActor))
+		{
+			if (!OverlapOnlyTrigger->bFireOnInteract)
+			{
+				continue;
+			}
+		}
+
+		Hit = CandidateHit;
+		UE_LOG(LogTemp, Log, TEXT("Subject14 TryInteract: calling IInteractable on '%s'"), *HitActor->GetName());
+#if !UE_BUILD_SHIPPING
+		DrawDebugLine(GetWorld(), Start, Hit.ImpactPoint, FColor::Green, false, 1.5f, 0, 1.5f);
+#endif
+		IInteractable::Execute_Subject14Interact(HitActor, this);
 		return;
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("Subject14 TryInteract: calling IInteractable on '%s'"), *HitActor->GetName());
-#if !UE_BUILD_SHIPPING
-	DrawDebugLine(GetWorld(), Start, Hit.ImpactPoint, FColor::Green, false, 1.5f, 0, 1.5f);
-#endif
-	IInteractable::Execute_Subject14Interact(HitActor, this);
+	UE_LOG(
+		LogTemp,
+		Log,
+		TEXT("Subject14 TryInteract: trace hit geometry but no usable IInteractable (%.0f uu)"),
+		InteractDistance);
 }
 
 void ASubject14FirstPersonCharacter::UpdateInteractPrompt()
@@ -754,22 +770,36 @@ void ASubject14FirstPersonCharacter::UpdateInteractPrompt()
 
 	FHitResult Hit;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Subject14InteractPrompt), false, this);
-	if (!GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+
+	TArray<FHitResult> Hits;
+	if (!GetWorld()->LineTraceMultiByChannel(Hits, Start, End, ECC_Visibility, Params))
 	{
 		return;
 	}
 
-	AActor* const HitActor = Hit.GetActor();
-	if (!HitActor || !HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+	for (const FHitResult& CandidateHit : Hits)
 	{
+		AActor* const HitActor = CandidateHit.GetActor();
+		if (!HitActor || !HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+		{
+			continue;
+		}
+
+		if (const ASubject14StoryTriggerActor* const OverlapOnlyTrigger = Cast<ASubject14StoryTriggerActor>(HitActor))
+		{
+			if (!OverlapOnlyTrigger->bFireOnInteract)
+			{
+				continue;
+			}
+		}
+
+		GEngine->AddOnScreenDebugMessage(
+			99142,
+			0.0f,
+			FColor(200, 200, 205),
+			TEXT("Press E — Interact"));
 		return;
 	}
-
-	GEngine->AddOnScreenDebugMessage(
-		99142,
-		0.0f,
-		FColor(200, 200, 205),
-		TEXT("Press E — Interact"));
 }
 
 void ASubject14FirstPersonCharacter::UpdateObjectiveHud()

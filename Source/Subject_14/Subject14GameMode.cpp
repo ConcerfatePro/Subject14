@@ -9,8 +9,6 @@ ASubject14GameMode::ASubject14GameMode()
 
 void ASubject14GameMode::StartPlay()
 {
-	Super::StartPlay();
-
 	if (USubject14StorySubsystem* const Story = USubject14StorySubsystem::Get(this))
 	{
 		if (Story->DoesProgressSlotExist())
@@ -18,4 +16,6 @@ void ASubject14GameMode::StartPlay()
 			Story->LoadProgressFromSlot();
 		}
 	}
+
+	Super::StartPlay();
 }

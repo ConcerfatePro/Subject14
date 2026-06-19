@@ -67,6 +67,9 @@ public:
 	TObjectPtr<USceneComponent> RootScene;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Subject14|Hatch")
+	TObjectPtr<USphereComponent> InteractProxy;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Subject14|Hatch")
 	TObjectPtr<UStaticMeshComponent> RugMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Subject14|Hatch")
@@ -83,10 +86,10 @@ public:
 	TObjectPtr<USphereComponent> DiscoveryVolume;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Hatch|Presentation", meta = (ClampMin = "0.0", ClampMax = "1.0"))
-	float LockLightIntensityPowered = 4.0f;
+	float LockLightIntensityPowered = 0.2f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Hatch|Presentation", meta = (ClampMin = "0.0", ClampMax = "1.0"))
-	float LockLightIntensityUnlocked = 8.0f;
+	float LockLightIntensityUnlocked = 0.35f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Hatch|Door", meta = (ClampMin = "-175.0", ClampMax = "175.0"))
 	float LidOpenYawDegrees = -95.0f;
@@ -148,6 +151,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Hatch|Feedback", meta = (MultiLine = "true"))
 	FString ThoughtOnNoPower;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Hatch|Feedback", meta = (MultiLine = "true"))
+	FString ThoughtOnUnlock;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Hatch|Feedback", meta = (MultiLine = "true"))
 	FString ThoughtOnPoweredSealed;

@@ -265,7 +265,7 @@ bool ASubject14Night1Director::ShouldRunNightTimeline()
 	{
 		Subsystem->AdvanceToNextStoryBeat();
 		Subsystem->SetStoryFlag(Subject14StoryFlags::Night1Started, true);
-		Subsystem->SetCurrentObjectiveLine(TEXT("Stay alert. Listen for what doesn't belong."));
+		Subsystem->SetCurrentObjectiveLine(TEXT("Survive the night."));
 		Subsystem->SaveProgressToSlot();
 		return true;
 	}
@@ -279,7 +279,7 @@ bool ASubject14Night1Director::ShouldRunNightTimeline()
 		}
 		if (Subsystem->GetCurrentObjectiveLine().IsEmpty())
 		{
-			Subsystem->SetCurrentObjectiveLine(TEXT("Stay alert. Listen for what doesn't belong."));
+			Subsystem->SetCurrentObjectiveLine(TEXT("Survive the night."));
 		}
 		return true;
 	}
@@ -335,7 +335,7 @@ void ASubject14Night1Director::CommitNight1StoryProgress()
 		Subsystem->SetStoryFlag(Subject14StoryFlags::Day2Started, true);
 	}
 
-	Subsystem->SetCurrentObjectiveLine(TEXT("Check the cabin. Something here isn't natural."));
+	Subsystem->SetCurrentObjectiveLine(TEXT("Search the cabin area."));
 	Subsystem->SaveProgressToSlot();
 
 #if !UE_BUILD_SHIPPING

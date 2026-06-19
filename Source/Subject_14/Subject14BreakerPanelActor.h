@@ -56,7 +56,7 @@ public:
 	FName GrantedStoryFlag = NAME_None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Breaker|Effects")
-	bool bSaveImmediatelyAfterUse = false;
+	bool bSaveImmediatelyAfterUse = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subject14|Breaker|Hatches")
 	TArray<TObjectPtr<ASubject14CabinHatchActor>> LinkedHatches;

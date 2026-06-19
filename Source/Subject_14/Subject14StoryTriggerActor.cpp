@@ -24,8 +24,8 @@ ASubject14StoryTriggerActor::ASubject14StoryTriggerActor()
 	TriggerBox->SetCollisionObjectType(ECC_WorldDynamic);
 	TriggerBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 	TriggerBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	// Allow the interact trace to land even if bFireOnInteract is later toggled on.
-	TriggerBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	// Only block interact traces when this trigger is meant to be used with E.
+	TriggerBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 	TriggerBox->SetGenerateOverlapEvents(true);
 
 #if WITH_EDITORONLY_DATA
@@ -47,6 +47,7 @@ void ASubject14StoryTriggerActor::BeginPlay()
 	{
 		TriggerBox->OnComponentBeginOverlap.RemoveDynamic(this, &ASubject14StoryTriggerActor::HandleBeginOverlap);
 		TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ASubject14StoryTriggerActor::HandleBeginOverlap);
+		TriggerBox->SetCollisionResponseToChannel(ECC_Visibility, bFireOnInteract ? ECR_Block : ECR_Ignore);
 	}
 
 #if !UE_BUILD_SHIPPING

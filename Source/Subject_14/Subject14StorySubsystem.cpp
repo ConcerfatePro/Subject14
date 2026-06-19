@@ -601,15 +601,21 @@ bool USubject14StorySubsystem::DoesProgressSlotExist() const
 
 bool USubject14StorySubsystem::DeleteProgressSlot()
 {
+	bool bDeleted = false;
 	if (!DoesProgressSlotExist())
 	{
+		UE_LOG(LogTemp, Log,
+			TEXT("USubject14StorySubsystem::DeleteProgressSlot('%s', %d) -> no save slot; resetting runtime state"),
+			*SaveSlotName, SaveUserIndex);
+		StartNewGame();
 		return false;
 	}
-	const bool bOk = UGameplayStatics::DeleteGameInSlot(SaveSlotName, SaveUserIndex);
+	bDeleted = UGameplayStatics::DeleteGameInSlot(SaveSlotName, SaveUserIndex);
 	UE_LOG(LogTemp, Log,
 		TEXT("USubject14StorySubsystem::DeleteProgressSlot('%s', %d) -> %d"),
-		*SaveSlotName, SaveUserIndex, bOk ? 1 : 0);
-	return bOk;
+		*SaveSlotName, SaveUserIndex, bDeleted ? 1 : 0);
+	StartNewGame();
+	return bDeleted;
 }
 
 // -----------------------------------------------------------------------------

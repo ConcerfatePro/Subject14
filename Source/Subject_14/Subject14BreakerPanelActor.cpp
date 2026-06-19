@@ -187,6 +187,19 @@ void ASubject14BreakerPanelActor::Subject14Interact_Implementation(AActor* const
 
 	if (bOneShot && IsPermanentlyConsumed(*Subsystem))
 	{
+		if (!ThoughtOnUse.IsEmpty())
+		{
+			USubject14ThoughtOverlayWidget::ShowThoughtLine(
+				this,
+				TEXT("Already live. Power is routed to the hatch."),
+				Subject14BreakerPrivate::ThoughtHold,
+				Subject14BreakerPrivate::ThoughtFadeIn,
+				Subject14BreakerPrivate::ThoughtFadeOut);
+		}
+		if (!ObjectiveAfterUse.IsEmpty())
+		{
+			Subsystem->SetCurrentObjectiveLine(ObjectiveAfterUse);
+		}
 #if !UE_BUILD_SHIPPING
 		UE_LOG(LogTemp, Verbose, TEXT("%s: interact ignored (one-shot consumed)."), *GetName());
 #endif

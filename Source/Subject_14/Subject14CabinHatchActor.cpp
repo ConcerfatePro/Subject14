@@ -31,6 +31,15 @@ ASubject14CabinHatchActor::ASubject14CabinHatchActor()
 	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
 	RootComponent = RootScene;
 
+	InteractProxy = CreateDefaultSubobject<USphereComponent>(TEXT("InteractProxy"));
+	InteractProxy->SetupAttachment(RootScene);
+	InteractProxy->InitSphereRadius(180.0f);
+	InteractProxy->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InteractProxy->SetCollisionResponseToAllChannels(ECR_Ignore);
+	InteractProxy->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	InteractProxy->SetHiddenInGame(true);
+	InteractProxy->SetVisibility(false);
+
 	RugMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RugMesh"));
 	RugMesh->SetupAttachment(RootScene);
 	RugMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -51,6 +60,8 @@ ASubject14CabinHatchActor::ASubject14CabinHatchActor()
 	LockIndicatorLight->SetIntensity(0.0f);
 	LockIndicatorLight->SetAttenuationRadius(220.0f);
 	LockIndicatorLight->SetOuterConeAngle(44.0f);
+	LockIndicatorLight->SetVisibility(false);
+	LockIndicatorLight->SetCastShadows(false);
 
 	DiscoveryVolume = CreateDefaultSubobject<USphereComponent>(TEXT("DiscoveryVolume"));
 	DiscoveryVolume->SetupAttachment(RootScene);
@@ -72,9 +83,9 @@ ASubject14CabinHatchActor::ASubject14CabinHatchActor()
 	if (CubeFinder.Succeeded())
 	{
 		RugMesh->SetStaticMesh(CubeFinder.Object);
-		RugMesh->SetRelativeScale3D(FVector(1.4f, 1.0f, 0.05f));
+		RugMesh->SetRelativeScale3D(FVector(2.2f, 1.6f, 0.06f));
 		LidMesh->SetStaticMesh(CubeFinder.Object);
-		LidMesh->SetRelativeScale3D(FVector(0.85f, 0.85f, 0.08f));
+		LidMesh->SetRelativeScale3D(FVector(1.2f, 1.2f, 0.1f));
 	}
 
 	static ConstructorHelpers::FObjectFinder<USoundBase> HumFinder(TEXT("/Game/Audio/MonitorWhineLoop.MonitorWhineLoop"));
@@ -105,6 +116,7 @@ ASubject14CabinHatchActor::ASubject14CabinHatchActor()
 	ThoughtOnProximityCue = TEXT("The floor sounds hollow here.");
 	ThoughtOnDiscovery = TEXT("This isn't a cabin.");
 	ThoughtOnNoPower = TEXT("No power. The lock won't release.");
+	ThoughtOnUnlock = TEXT("Lock released.");
 	ThoughtWhenGateBlocked = TEXT("Not yet. Keep searching.");
 }
 
@@ -313,22 +325,12 @@ void ASubject14CabinHatchActor::RefreshPresentation()
 
 	if (LockIndicatorLight)
 	{
-		if (!bDiscovered || bOpened)
-		{
-			LockIndicatorLight->SetIntensity(0.0f);
-		}
-		else if (bPowered && !bUnlocked)
-		{
-			LockIndicatorLight->SetIntensity(LockLightIntensityPowered);
-		}
-		else if (bUnlocked && !bOpened)
-		{
-			LockIndicatorLight->SetIntensity(LockLightIntensityUnlocked);
-		}
-		else
-		{
-			LockIndicatorLight->SetIntensity(0.15f);
-		}
+		LockIndicatorLight->SetIntensity(0.0f);
+	}
+
+	if (InteractProxy)
+	{
+		InteractProxy->SetCollisionEnabled(bOpened ? ECollisionEnabled::NoCollision : ECollisionEnabled::QueryOnly);
 	}
 
 	SetHumActive(bPowered && bDiscovered && !bOpened && !bOpeningInterp);
@@ -387,7 +389,7 @@ void ASubject14CabinHatchActor::TryCommitDiscoveryFromInteract(AActor* const Ins
 
 	UE_LOG(LogTemp, Log, TEXT("%s: HatchDiscovered committed (%s)."), *GetName(), Instigator ? *Instigator->GetName() : TEXT("<none>"));
 
-	Subsystem->SetCurrentObjectiveLine(TEXT("Find the breaker. The hatch needs power."));
+	Subsystem->SetCurrentObjectiveLine(TEXT("Restore local power."));
 	if (bSaveProgressOnStateChange)
 	{
 		Subsystem->SaveProgressToSlot();
@@ -433,12 +435,22 @@ void ASubject14CabinHatchActor::TryUnlockFromPowered(AActor* const Instigator)
 		UGameplayStatics::PlaySoundAtLocation(this, UnlockSound, GetActorLocation());
 	}
 
+	if (!ThoughtOnUnlock.IsEmpty())
+	{
+		USubject14ThoughtOverlayWidget::ShowThoughtLine(
+			this,
+			ThoughtOnUnlock,
+			Subject14HatchPrivate::ThoughtHold,
+			Subject14HatchPrivate::ThoughtFadeIn,
+			Subject14HatchPrivate::ThoughtFadeOut);
+	}
+
 	if (bAdvanceMacroPhaseToHatchUnlockedOnUnlock && Subsystem->GetCurrentPhase() == ESubject14StoryPhase::Day3BreachPrep)
 	{
 		Subsystem->SetPhase(ESubject14StoryPhase::HatchUnlocked);
 	}
 
-	Subsystem->SetCurrentObjectiveLine(TEXT("Open it."));
+	Subsystem->SetCurrentObjectiveLine(TEXT("Open the hatch."));
 
 	UE_LOG(LogTemp, Log, TEXT("%s: hatch unlocked by %s."), *GetName(), *Instigator->GetName());
 
@@ -496,7 +508,7 @@ void ASubject14CabinHatchActor::FinishOpening()
 	{
 		Subsystem->SetStoryFlag(Subject14StoryFlags::HatchOpened, true);
 		Subsystem->SetPhase(ESubject14StoryPhase::FirstBreach);
-		Subsystem->SetCurrentObjectiveLine(TEXT("The floor is open. Something waits below."));
+		Subsystem->SetCurrentObjectiveLine(FString());
 		if (bSaveProgressOnStateChange)
 		{
 			Subsystem->SaveProgressToSlot();
@@ -542,6 +554,16 @@ void ASubject14CabinHatchActor::Subject14Interact_Implementation(AActor* const I
 	case ESubject14CabinHatchState::Concealed:
 	case ESubject14CabinHatchState::Discovered:
 		TryCommitDiscoveryFromInteract(Instigator);
+		if (Subsystem->HasStoryFlag(Subject14StoryFlags::HatchHasPower)
+			&& Subsystem->HasStoryFlag(Subject14StoryFlags::HatchDiscovered)
+			&& !Subsystem->HasStoryFlag(Subject14StoryFlags::HatchUnlocked))
+		{
+			TryUnlockFromPowered(Instigator);
+		}
+		if (Subsystem->HasStoryFlag(Subject14StoryFlags::HatchUnlocked))
+		{
+			TryBeginOpen(Instigator);
+		}
 		break;
 	case ESubject14CabinHatchState::LockedNoPower:
 		if (SealedNoPowerSound)
@@ -557,9 +579,14 @@ void ASubject14CabinHatchActor::Subject14Interact_Implementation(AActor* const I
 				Subject14HatchPrivate::ThoughtFadeIn,
 				Subject14HatchPrivate::ThoughtFadeOut);
 		}
+		Subsystem->SetCurrentObjectiveLine(TEXT("Restore local power."));
 		break;
 	case ESubject14CabinHatchState::LockedPowered:
 		TryUnlockFromPowered(Instigator);
+		if (Subsystem->HasStoryFlag(Subject14StoryFlags::HatchUnlocked))
+		{
+			TryBeginOpen(Instigator);
+		}
 		break;
 	case ESubject14CabinHatchState::Unlocked:
 		TryBeginOpen(Instigator);

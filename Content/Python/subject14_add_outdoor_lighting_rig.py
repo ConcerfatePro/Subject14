@@ -1,5 +1,5 @@
 # Run once from the Unreal Editor Output Log:
-#   py "/home/devin/Documents/Unreal Projects/Subject_14/Content/Python/subject14_add_outdoor_lighting_rig.py"
+#   exec(open(unreal.Paths.project_content_dir() + "Python/subject14_add_outdoor_lighting_rig.py").read())
 # Or: Tools > Execute Python Script... and pick this file.
 #
 # Adds Sky Atmosphere + Directional Light (as sun) + Skylight + Height Fog if missing.
@@ -74,8 +74,11 @@ def _configure_directional(actor):
     if not comp:
         unreal.log_warning("Subject14 lighting rig: no DirectionalLightComponent")
         return
-    comp.set_editor_property("intensity", 10.0)
-    comp.set_editor_property("light_color", unreal.LinearColor(1.0, 0.98, 0.92, 1.0))
+    comp.set_editor_property("intensity", 0.85)
+    try:
+        comp.set_editor_property("light_color", unreal.Color(230, 224, 204, 255))
+    except Exception as exc:
+        unreal.log_warning("Subject14 lighting rig: could not set directional light_color (%s)" % (exc,))
     # UE 5.x: mark this light as the atmosphere sun (names vary slightly; both are safe if one exists)
     for prop in ("atmosphere_sun_light", "b_atmosphere_sun_light"):
         try:
@@ -94,7 +97,7 @@ def _configure_skylight(actor):
         comp.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
     except Exception:
         pass
-    comp.set_editor_property("intensity", 3.0)
+    comp.set_editor_property("intensity", 0.28)
     comp.set_editor_property("real_time_capture", True)
     # Fill undersides / contact shadows a little (not pure black under meshes)
     try:
@@ -140,14 +143,20 @@ def main():
         _configure_directional(a)
         unreal.log("Subject14 lighting rig: spawned DirectionalLight")
     else:
-        unreal.log("Subject14 lighting rig: DirectionalLight already present — skip")
+        for actor in _actor_subsystem().get_all_level_actors():
+            if _actor_derives_from_engine_class(actor, unreal.DirectionalLight):
+                _configure_directional(actor)
+        unreal.log("Subject14 lighting rig: DirectionalLight already present — reconfigured")
 
     if _count(unreal.SkyLight) == 0:
         a = _spawn(unreal.SkyLight, unreal.Vector(0.0, 0.0, 300.0), _ROT_ZERO)
         _configure_skylight(a)
         unreal.log("Subject14 lighting rig: spawned SkyLight")
     else:
-        unreal.log("Subject14 lighting rig: SkyLight already present — skip")
+        for actor in _actor_subsystem().get_all_level_actors():
+            if _actor_derives_from_engine_class(actor, unreal.SkyLight):
+                _configure_skylight(actor)
+        unreal.log("Subject14 lighting rig: SkyLight already present — reconfigured")
 
     if _count(unreal.ExponentialHeightFog) == 0:
         a = _spawn(unreal.ExponentialHeightFog, loc_origin, _ROT_ZERO)

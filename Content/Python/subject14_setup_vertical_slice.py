@@ -1,14 +1,16 @@
 # Builds the Night 1 -> Day 3 hatch breach vertical slice in the current editor level.
 #
-# Open Lvl_Dev first, then run:
-#   py "/home/devin/Desktop/Unreal Projects/Subject_14/Content/Python/subject14_setup_vertical_slice.py"
+# Open Lvl_Dev first, then run in Output Log (Python mode):
+#   import unreal
+#   exec(open(unreal.Paths.project_content_dir() + "Python/subject14_setup_vertical_slice.py").read())
 #
 # All interactables are placed OUTSIDE the cabin box with marker posts.
 # Player approaches from spawn (+Y) toward the cabin front face.
 
+import os
+
 import unreal
 
-_PROJECT_ROOT = "/home/devin/Desktop/Unreal Projects/Subject_14"
 _ROT_ZERO = unreal.Rotator(0.0, 0.0, 0.0)
 
 # Cabin shell: center (0, -1100, 150), scale (6, 5, 3) on 100uu cube.
@@ -23,7 +25,7 @@ LOC_HATCH = unreal.Vector(0.0, -700.0, 45.0)       # front porch, in front of do
 LOC_BREAKER = unreal.Vector(460.0, -1020.0, 110.0) # right side
 LOC_NOTE3 = unreal.Vector(520.0, -900.0, 130.0)    # near breaker
 LOC_DAY2_TRIGGER = unreal.Vector(0.0, -520.0, 100.0)
-LOC_DAY3_TRIGGER = unreal.Vector(0.0, -680.0, 100.0)
+LOC_DAY3_TRIGGER = unreal.Vector(0.0, -580.0, 100.0)
 
 FLAG_DAY2_STARTED = "Day2Started"
 FLAG_DAY2_KEY_EVIDENCE = "Day2_KeyEvidence"
@@ -44,14 +46,13 @@ _SLICE_LABELS = (
     "S14_DevHatch",
     "S14_DevBreaker",
     "S14_BreakerMarker",
+    "S14_Marker_Breaker",
     "S14_DevNoteDay3",
     "S14_HatchPad",
     "S14_Marker_Note01",
     "S14_Marker_Note02",
     "S14_Marker_Hatch",
-    "S14_Light_Note01",
-    "S14_Light_Note02",
-    "S14_Light_Breaker",
+    "S14_PostProcess",
     "S14_CreatureHintAnchor",
     "S14_TreelineAnchor",
 )
@@ -154,6 +155,17 @@ def _spawn_soft_point_light(loc, intensity, label, warm=True, radius=240.0):
     return light
 
 
+def _set_no_collision(actor):
+    if not actor:
+        return
+    smc = actor.get_component_by_class(unreal.StaticMeshComponent)
+    if smc:
+        try:
+            smc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+        except Exception:
+            pass
+
+
 def _spawn_marker_post(loc, label, scale_xyz=(0.22, 0.22, 1.8)):
     mesh = _load_cube_mesh()
     if not mesh:
@@ -163,6 +175,10 @@ def _spawn_marker_post(loc, label, scale_xyz=(0.22, 0.22, 1.8)):
     if smc:
         smc.set_static_mesh(mesh)
         post.set_actor_scale3d(unreal.Vector(scale_xyz[0], scale_xyz[1], scale_xyz[2]))
+        try:
+            smc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+        except Exception:
+            pass
     return post
 
 
@@ -176,37 +192,104 @@ def _spawn_hatch_pad(loc):
         smc.set_static_mesh(mesh)
         pad.set_actor_scale3d(unreal.Vector(1.6, 1.6, 1.0))
         pad.set_actor_location(loc + unreal.Vector(0.0, 0.0, -2.0), False, False)
+        try:
+            smc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+        except Exception:
+            pass
     return pad
 
 
 def _soften_scene_lights():
-    """Dim every sun/skylight/point light in the level."""
+    """Dim every sun/skylight in the level and remove cue point lights."""
     asub = _actor_subsystem()
     for actor in asub.get_all_level_actors():
+        try:
+            lab = actor.get_actor_label()
+        except Exception:
+            lab = ""
+        if lab.startswith("S14_Light_"):
+            asub.destroy_actor(actor)
+            continue
+
         dlc = actor.get_component_by_class(unreal.DirectionalLightComponent)
         if dlc:
-            dlc.set_editor_property("intensity", 1.15)
+            dlc.set_editor_property("intensity", 0.85)
             try:
-                dlc.set_editor_property("light_color", unreal.LinearColor(0.92, 0.9, 0.82, 1.0))
+                dlc.set_editor_property("light_color", unreal.Color(230, 224, 204, 255))
             except Exception:
                 pass
 
         slc = actor.get_component_by_class(unreal.SkyLightComponent)
         if slc:
-            slc.set_editor_property("intensity", 0.35)
+            slc.set_editor_property("intensity", 0.28)
             try:
                 slc.set_editor_property("real_time_capture", False)
             except Exception:
                 pass
 
-        plc = actor.get_component_by_class(unreal.PointLightComponent)
-        if plc:
+
+def _setup_post_process():
+    def _try_set(target, names, value):
+        for name in names:
             try:
-                lab = actor.get_actor_label()
+                target.set_editor_property(name, value)
+                return True
             except Exception:
-                lab = ""
-            if not lab.startswith("S14_Light_"):
-                plc.set_editor_property("intensity", min(plc.get_editor_property("intensity"), 80.0))
+                continue
+        return False
+
+    pp = _spawn_actor(unreal.PostProcessVolume, unreal.Vector(0.0, 0.0, 0.0), _ROT_ZERO, "S14_PostProcess")
+    if not pp:
+        return
+    try:
+        comp = pp.get_component_by_class(unreal.PostProcessComponent)
+    except Exception:
+        comp = None
+    for target in (pp, comp):
+        if not target:
+            continue
+        for prop in ("b_unbound", "unbound", "b_infinite_extent"):
+            try:
+                target.set_editor_property(prop, True)
+                break
+            except Exception:
+                continue
+        for prop, value in (("enabled", True), ("b_enabled", True), ("blend_weight", 1.0), ("blend_radius", 0.0)):
+            try:
+                target.set_editor_property(prop, value)
+            except Exception:
+                pass
+    settings = None
+    if comp:
+        try:
+            settings = comp.get_editor_property("settings")
+        except Exception:
+            settings = None
+    if settings is None:
+        try:
+            settings = pp.get_editor_property("settings")
+        except Exception:
+            settings = None
+    if settings is None:
+        unreal.log_warning("subject14_setup_vertical_slice: post process settings unavailable")
+        return
+    for names, value in (
+        (("override_bloom_intensity", "b_override_bloom_intensity", "bOverride_BloomIntensity"), True),
+        (("bloom_intensity", "BloomIntensity"), 0.0),
+        (("override_lens_flare_intensity", "b_override_lens_flare_intensity", "bOverride_LensFlareIntensity"), True),
+        (("lens_flare_intensity", "LensFlareIntensity"), 0.0),
+        (("override_auto_exposure_bias", "b_override_auto_exposure_bias", "bOverride_AutoExposureBias"), True),
+        (("auto_exposure_bias", "AutoExposureBias"), -0.35),
+    ):
+        _try_set(settings, names, value)
+    try:
+        pp.set_editor_property("settings", settings)
+    except Exception:
+        if comp:
+            try:
+                comp.set_editor_property("settings", settings)
+            except Exception:
+                pass
 
 
 def _setup_floor():
@@ -288,7 +371,7 @@ def _setup_cabin_greybox():
 def _setup_outdoor_lighting():
     import importlib.util
 
-    path = _PROJECT_ROOT + "/Content/Python/subject14_add_outdoor_lighting_rig.py"
+    path = os.path.join(unreal.Paths.project_content_dir(), "Python", "subject14_add_outdoor_lighting_rig.py")
     spec = importlib.util.spec_from_file_location("subject14_outdoor_lighting", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -353,15 +436,13 @@ def _setup_notes():
                 "Subject 14 demonstrates stable environmental adaptation. Cabin remains preferred shelter during initial dark-cycle stress periods.",
             )
             note2.set_editor_property("ThoughtAfterRead", "Subject 14...? No. No, that can't be me.")
-            note2.set_editor_property("ObjectiveAfterRead", "Something runs under the floor.")
+            note2.set_editor_property("ObjectiveAfterRead", "Find the source of the wiring.")
             note2.set_editor_property("ThoughtWhenGateBlocked", "Not time to read this yet.")
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: note2 (%s)" % (exc,))
 
     _spawn_marker_post(LOC_NOTE1 + unreal.Vector(0.0, 0.0, 90.0), "S14_Marker_Note01")
     _spawn_marker_post(LOC_NOTE2 + unreal.Vector(0.0, 0.0, 90.0), "S14_Marker_Note02")
-    _spawn_soft_point_light(LOC_NOTE1 + unreal.Vector(0.0, 0.0, 240.0), 42.0, "S14_Light_Note01", warm=True)
-    _spawn_soft_point_light(LOC_NOTE2 + unreal.Vector(0.0, 0.0, 240.0), 48.0, "S14_Light_Note02", warm=True)
     return note1, note2
 
 
@@ -377,7 +458,7 @@ def _setup_story_triggers():
             day2.set_editor_property("RequiredStoryFlag", unreal.Name(FLAG_DAY2_STARTED))
             day2.set_editor_property("GrantedStoryFlag", unreal.Name("Day2_WatchedCue"))
             day2.set_editor_property("ThoughtLine", "Something out there isn't just wandering. It's looking.")
-            day2.set_editor_property("ObjectiveLine", "Read anything left around the cabin.")
+            day2.set_editor_property("ObjectiveLine", "Search the cabin area.")
             day2.set_editor_property("bFireOnOverlap", True)
             day2.set_editor_property("bOneShot", True)
             day2.set_editor_property("bOneShotPersistent", True)
@@ -414,6 +495,8 @@ def _setup_hatch_slice():
     breaker = _spawn_actor(breaker_cls, LOC_BREAKER, _ROT_ZERO, "S14_DevBreaker")
     note = _spawn_actor(note_cls, LOC_NOTE3, _ROT_ZERO, "S14_DevNoteDay3")
 
+    _spawn_marker_post(LOC_BREAKER + unreal.Vector(0.0, 0.0, 90.0), "S14_Marker_Breaker", (0.22, 0.22, 1.8))
+
     mesh = _load_cube_mesh()
     if mesh:
         marker = _spawn_actor(unreal.StaticMeshActor, LOC_BREAKER + unreal.Vector(0.0, 0.0, 50.0), _ROT_ZERO, "S14_BreakerMarker")
@@ -421,6 +504,10 @@ def _setup_hatch_slice():
         if mmc:
             mmc.set_static_mesh(mesh)
             marker.set_actor_scale3d(unreal.Vector(0.5, 0.5, 0.5))
+            try:
+                mmc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+            except Exception:
+                pass
 
     if note:
         try:
@@ -432,7 +519,7 @@ def _setup_hatch_slice():
                 "NoteBody",
                 "If Canopy Ops keeps masking the support resonance, one of these subjects is eventually going to hear it. You cannot build a fake forest on top of steel and expect silence forever.",
             )
-            note.set_editor_property("ObjectiveAfterRead", "The breaker should feed the hatch bus.")
+            note.set_editor_property("ObjectiveAfterRead", "Restore local power.")
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: day3 note (%s)" % (exc,))
 
@@ -445,7 +532,7 @@ def _setup_hatch_slice():
             breaker.set_editor_property("GrantedStoryFlag", unreal.Name(FLAG_HATCH_HAS_POWER))
             breaker.set_editor_property("ConsumedStoryFlag", unreal.Name(FLAG_BREAKER_USED))
             breaker.set_editor_property("bSaveImmediatelyAfterUse", True)
-            breaker.set_editor_property("ObjectiveAfterUse", "Return to the hatch. Release the lock.")
+            breaker.set_editor_property("ObjectiveAfterUse", "Return to the hatch.")
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: breaker (%s)" % (exc,))
 
@@ -454,11 +541,11 @@ def _setup_hatch_slice():
             hatch.set_editor_property("RequiredStoryFlag", unreal.Name(FLAG_DAY3_BREACH_PREP))
             hatch.set_editor_property("ThoughtOnDiscovery", "This isn't a cabin.")
             hatch.set_editor_property("ThoughtOnNoPower", "No power. The lock won't release.")
+            hatch.set_editor_property("ThoughtOnUnlock", "Lock released.")
             hatch.set_editor_property("ThoughtWhenGateBlocked", "Not yet. Keep searching.")
         except Exception as exc:
             unreal.log_warning("subject14_setup_vertical_slice: hatch (%s)" % (exc,))
 
-    _spawn_soft_point_light(LOC_BREAKER + unreal.Vector(0.0, 0.0, 200.0), 50.0, "S14_Light_Breaker", warm=True)
     return hatch, breaker
 
 
@@ -479,6 +566,7 @@ def main():
     _setup_cabin_greybox()
     _setup_outdoor_lighting()
     _soften_scene_lights()
+    _setup_post_process()
 
     note1, note2 = _setup_notes()
     _setup_story_triggers()

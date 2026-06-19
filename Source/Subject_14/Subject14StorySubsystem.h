@@ -146,6 +146,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Subject14|Story|Save")
 	bool DoesProgressSlotExist() const;
 
+	/** Deletes the disk save and resets in-memory story state for the active PIE/session world. */
 	UFUNCTION(BlueprintCallable, Category = "Subject14|Story|Save")
 	bool DeleteProgressSlot();
 
